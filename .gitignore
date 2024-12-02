@@ -1,0 +1,4 @@
+.conda
+*.stl
+*.inp
+*.brep
