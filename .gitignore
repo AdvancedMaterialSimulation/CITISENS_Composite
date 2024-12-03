@@ -2,3 +2,5 @@
 *.stl
 *.inp
 *.brep
+output/
+*.pyc

@@ -1,2 +1,5 @@
 ipykernel 
 gmsh
+matplotlib
+numpy
+djccx @ git+https://github.com/djoroya/djccx.git
