@@ -1,5 +1,7 @@
 import gmsh
 import numpy as np
+from .process_surfaces_in_plane import process_surfaces_in_plane
+
 def labeling(ph_surfaces,label):
     
 
@@ -133,82 +135,93 @@ def CreateLayerYarns(params,params_layer):
         surfaces.append( (surface, gmsh.model.occ.getCenterOfMass(2, surface[1])) )
 
 
+    # Uso de la función para los cuatro casos
+
+    cases = [(0, 0,  'x',"0"), 
+             (0, Lx, 'x',"L"), 
+             (1, 0,  'y',"0"),
+             (1, Ly, 'y',"L")]
+    
+    tags_split = []
+    for coord, value, plane,name in cases:
+        results = process_surfaces_in_plane(surfaces, coord, value, 
+                                            layer_name, plane,name)
+        
+        tags_split.append({
+            "cord" : coord,
+            "value" : value,
+            "plane" : plane,
+            "name" : name,
+            "results" : results
+        })
+
    # ================================================================================================= 
 
-    lens = [ len(gmsh.model.getBoundary([surface[0]], oriented=False, recursive=False)) 
-            for surface in surfaces ] 
-    surfaces_circles = [surface for i,surface in enumerate(surfaces) if lens[i] == 1]
-    surfaces_circles = sorted(surfaces_circles, key=lambda x: x[1][0])
+    zpos = [surface[1][2] for surface in surfaces]
+    surfaces_in_z0 = [surface for i,surface in enumerate(surfaces) if np.abs(zpos[i] - (z-dz/2)) < 1e-6]
+    surfaces_in_zLz = [surface for i,surface in enumerate(surfaces) if np.abs(zpos[i] - (z + dz/2 )) < 1e-6]
+
+    if len(surfaces_in_z0) !=1:
+        raise ValueError("Error: The number of surfaces in z = 0 is not 1")
+    if len(surfaces_in_zLz) !=1:
+        raise ValueError("Error: The number of surfaces in z = Lz is not 1")
+    
+    surfaces_in_z0 = surfaces_in_z0[0]
+    surfaces_in_zLz = surfaces_in_zLz[0]
+
+    ph = gmsh.model.addPhysicalGroup(2, [surfaces_in_z0[0][1]], -1)
+    gmsh.model.setPhysicalName(2, ph, layer_name + "_z0")
+
+    ph = gmsh.model.addPhysicalGroup(2, [surfaces_in_zLz[0][1]], -1)
+    gmsh.model.setPhysicalName(2, ph, layer_name + "_zLz")
+
+  
    # compute number of aristas
-
-    ##
-    ph_surfaces =[ surfaces[0], 
-                   surfaces[1] ]
-    
-    tags_min_x = labeling(ph_surfaces,layer_name+"_xmin")
-    
-
-
-    ph_surfaces =[ surfaces[-1],
-                   surfaces[-2] ]
-    
-    tags_max_x = labeling(ph_surfaces,layer_name+"_xmax")
-    
-    
-   # ================================================================================================= 
-    surfaces = sorted(surfaces, key=lambda x: x[1][1])
-    ##
-    ph_surfaces =[   surfaces[0],
-                     surfaces[1] ]
-
-    tags_min_y = labeling(ph_surfaces,layer_name+"_ymin")
-
-    ph_surfaces =[   surfaces[-1],
-                     surfaces[-2] ]
-    
-    tags_max_y = labeling(ph_surfaces,layer_name+"_ymax")
 
     # =================================================================================================
 
-    # tx = -2*r
-    # ty = 0
-    # tz = 0
+    tx = -Lx
+    ty = 0
+    tz = 0
 
-    # transformation = [  1 ,0 ,0 ,tx ,
-    #                     0 ,1 ,0 ,ty ,
-    #                     0 ,0 ,1 ,tz ,
-    #                     0 ,0 ,0 ,1]
+    transformation = [  1 ,0 ,0 ,tx ,
+                        0 ,1 ,0 ,ty ,
+                        0 ,0 ,1 ,tz ,
+                        0 ,0 ,0 ,0]
+    
+    tags_min_x = [ i for i in tags_split if     i["plane"] == "x" 
+                                            and i["value"] == 0 ][0]["results"]
+    
+    tags_max_x = [ i for i in tags_split if i["plane"] == "x" 
+                                            and i["value"] == Lx][0]["results"]
+
+    gmsh.model.mesh.setPeriodic(2,[tags_min_x["rectangle"]] ,
+                                  [tags_max_x["rectangle"]] ,transformation)
+    
+    gmsh.model.mesh.setPeriodic(2,tags_min_x["circles"] ,
+                                  tags_max_x["circles"] ,transformation)
     
 
-    # gmsh.model.mesh.setPeriodic(2,[tags_min_x["circle"]] ,
-    #                               [tags_max_x["circle"]] ,transformation)
+    tx = 0
+    ty = -Ly
+
+    transformation = [  1 ,0 ,0 ,tx ,
+                        0 ,1 ,0 ,ty ,
+                        0 ,0 ,1 ,tz ,
+                        0 ,0 ,0 ,0]
+
+
+    tags_max_y = [ i for i in tags_split if i["plane"] == "y"
+                                            and i["value"] == Ly][0]["results"]
+    tags_min_y = [ i for i in tags_split if i["plane"] == "y"
+                                            and i["value"] == 0 ][0]["results"]
     
-
-    # gmsh.model.mesh.setPeriodic(2,[tags_min_x["rectangular"]] ,
-    #                               [tags_max_x["rectangular"]] ,transformation)
-    # tx = 0
-    # ty = -2*r
-    # tz = 0
-
-    # transformation = [  1 ,0 ,0 ,tx ,
-    #                     0 ,1 ,0 ,ty ,
-    #                     0 ,0 ,1 ,tz ,
-    #                     0 ,0 ,0 ,1]
-
-    # gmsh.model.mesh.setPeriodic(2,[tags_min_y["circle"]] ,
-    #                               [tags_max_y["circle"]] ,transformation)
+    gmsh.model.mesh.setPeriodic(2,[tags_min_y["rectangle"]] ,
+                                    [tags_max_y["rectangle"]] ,transformation)
     
-    # gmsh.model.mesh.setPeriodic(2,[tags_min_y["rectangular"]] ,
-    #                               [tags_max_y["rectangular"]] ,transformation)
-
-
-    surfaces = sorted(surfaces, key=lambda x: x[1][2])
-
-    ph_label = gmsh.model.addPhysicalGroup(2, [surfaces[0][0][1]], -1)
-    gmsh.model.setPhysicalName(2, ph_label, "face_zmin_" + layer_name)
-
-    ph_label = gmsh.model.addPhysicalGroup(2, [surfaces[-1][0][1]], -1)
-    gmsh.model.setPhysicalName(2, ph_label, "face_zmax_" + layer_name)
+    gmsh.model.mesh.setPeriodic(2,tags_min_y["circles"] ,
+                                    tags_max_y["circles"] ,transformation)
+    
 
 
     gmsh.model.occ.synchronize()

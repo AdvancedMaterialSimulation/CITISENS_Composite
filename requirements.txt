@@ -4,3 +4,4 @@ matplotlib
 numpy
 djccx @ git+https://github.com/djoroya/djccx.git
 runstep @ git+https://github.com/djoroya/runstep.git
+djgit @ git+https://github.com/djoroya/djgit.git
