@@ -135,15 +135,18 @@ def CreateLayerYarns(params,params_layer):
 
    # ================================================================================================= 
 
-    surfaces = sorted(surfaces, key=lambda x: x[1][0])
-   # compute number of aristas
     lens = [ len(gmsh.model.getBoundary([surface[0]], oriented=False, recursive=False)) 
             for surface in surfaces ] 
+    surfaces_circles = [surface for i,surface in enumerate(surfaces) if lens[i] == 1]
+    surfaces_circles = sorted(surfaces_circles, key=lambda x: x[1][0])
+   # compute number of aristas
+
     ##
     ph_surfaces =[ surfaces[0], 
                    surfaces[1] ]
     
     tags_min_x = labeling(ph_surfaces,layer_name+"_xmin")
+    
 
 
     ph_surfaces =[ surfaces[-1],
