@@ -4,3 +4,5 @@
 *.brep
 output/
 *.pyc
+scripts/SandwichRVE/.opt
+output.msh

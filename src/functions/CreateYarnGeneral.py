@@ -1,6 +1,6 @@
 import gmsh
 import numpy as np
-def reduce_points(trajs, num_points=80):
+def reduce_points(trajs, num_points=80,density=None):
     """
     Reduce el número de puntos de una trayectoria interpolando uniformemente.
     
@@ -12,6 +12,10 @@ def reduce_points(trajs, num_points=80):
         np.ndarray: Trayectoria reducida con forma (num_points, 3).
     """
     # Calcular diferencias y longitudes acumuladas
+    if density is not None:
+        long = np.linalg.norm(np.diff(trajs, axis=0), axis=1)
+        long  = np.sum(long)
+        num_points = int(long*density)
     diff = np.diff(trajs, axis=0)
     segment_lengths = np.linalg.norm(diff, axis=1)
     cum_lengths = np.concatenate([[0], np.cumsum(segment_lengths)])  # Longitud acumulada
@@ -35,21 +39,33 @@ def reduce_points(trajs, num_points=80):
 
 def CreateYarn(params):
 
+    plausible_final =np.array([[1,0,0], [0,1,0], [-1,0,0], [0,-1,0] ] )
+
     printw = lambda *args: print("[CreateYarn]", *args)
 
     trajs  = params["trajs"]
     file   = params["file"]
     radius = params["radius"]
-    num_points = params["num_points"]
-    last_vector = params["last_vector"]
-
-
-    trajs = reduce_points(trajs, num_points=num_points)
+    density = params["density"] 
+    trajs = reduce_points(trajs, density=density)
 
     trajs_vec = np.diff(trajs, axis=0)
+
+    distance_to_plausible = lambda x: np.linalg.norm(x - plausible_final, axis=1)
+
+    # get the plausible vector
+    last_vector = trajs_vec[-1]
+    last_vector = last_vector / np.linalg.norm(last_vector)
+    last_vector = plausible_final[np.argmin(distance_to_plausible(last_vector))].copy()
+
     trajs_vec = np.concatenate((trajs_vec, [last_vector]), axis=0)
 
-    trajs_vec[0] = np.array( params["first_vector"] )
+
+    # first vector
+    first_vector = trajs_vec[0]
+    first_vector = first_vector / np.linalg.norm(first_vector)
+    first_vector = plausible_final[np.argmin(distance_to_plausible(first_vector))].copy()
+    trajs_vec[0] = first_vector
     # 
 
     # Iniciar GMSH

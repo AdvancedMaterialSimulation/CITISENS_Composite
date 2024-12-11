@@ -6,7 +6,7 @@ def CreateCompositeMinRVE(params):
     radius = params["radius"]
     r      = params["r"]
     files  = params["files"]
-    output = params["output"]
+    output = params["inp_file"]
 
 
     gmsh.initialize()
@@ -210,4 +210,6 @@ def CreateCompositeMinRVE(params):
 
     gmsh.finalize()
 
-    return results
+
+    params["results"] = results
+    return params

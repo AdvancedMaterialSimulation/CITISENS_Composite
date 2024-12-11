@@ -1,13 +1,20 @@
 import os
 join = os.path.join
 from djccx.inp.inp import inp
+import numpy as np
 
-def Simulation(results,r):
+def Simulation(params):
 
-    inp_f = inp("composite_pbc_min.inp")
+    r = params["mesh"]["r"]
+    results = params["mesh"]["results"]
+
+    inp_f = inp(params["mesh"]["inp_file"])
     inp_f.remove_by_type(1)
     inp_f.remove_by_type(2)
 
+    ylen = inp_f.nodes.df["y"].max() - inp_f.nodes.df["y"].min()
+    epsilon = params["epsilon"]
+    params["displ"] = epsilon*ylen
 
     for nset in results.keys():
         inp_f.CreateNsetFromIds(results[nset], nset)
@@ -46,12 +53,14 @@ def Simulation(results,r):
     inp_f.AddEquation("X_MIN","X_MAX",dims=[1,2,3])
 
 
-    young = 2960
-    nu = 0.3
+    young = params["materials"]["matrix"]["E"]
+    nu    = params["materials"]["matrix"]["nu"]
+
     matrix_material = inp_f.CreateElasticMaterial("matrix",young,nu)
 
-    young = 2000000
-    nu = 0.3
+    young = params["materials"]["carbon"]["E"]
+    nu    = params["materials"]["carbon"]["nu"]
+
     carbon_material = inp_f.CreateElasticMaterial("carbon",young,nu)
 
     allelset  = inp_f.CreateElsetAll()
@@ -63,17 +72,21 @@ def Simulation(results,r):
     # ============================================
     # STEP
     # ============================================
-    istep = inp_f.CreateStaticStep(nlgeom=True)
 
-    istep.CreateBoundary(Y_MIN_WITHOUT_EDGES,dim=2,displ=0.0)
-    istep.CreateBoundary(Y_MAX_WITHOUT_EDGES,dim=2,displ=1.0)
+    displ_span = np.linspace(0,params["displ"],params["nsteps"])
+
+    for i in range(len(displ_span)):
+        istep = inp_f.CreateStaticStep(nlgeom=True)
+
+        istep.CreateBoundary(Y_MIN_WITHOUT_EDGES,dim=2,displ=0)
+        istep.CreateBoundary(Y_MAX_WITHOUT_EDGES,dim=2,displ=displ_span[i])
 
 
-    inflation_folder = join("output")
+    output_folder = join(params["output"])
 
-    if not os.path.exists(inflation_folder):
-        os.makedirs(inflation_folder)
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-    frd = inp_f.run(inflation_folder)
+    frd = inp_f.run(output_folder)
 
     return frd
