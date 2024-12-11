@@ -48,8 +48,16 @@ def Simulation(params):
 
     boxs_solid  = inp_f.select_regex(".*_BOX","elset")
     yarns_solid = inp_f.select_regex(".*YARN_.*","elset")
+
+    BOX_MID_ZMIN = inp_f.select("BOX_MID_ZMIN","elset")
+    BOX_MID_ZMAX = inp_f.select("BOX_MID_ZMAX","elset")
+
+    LY_1_ZLZ = inp_f.select("LY_1_ZLZ","elset")
+    LY_2_Z0  = inp_f.select("LY_2_Z0","elset")
+
+
     box_mid     = inp_f.select("BOX_MID","elset")
-    inp_f.AddEquation("X_MIN","X_MAX",dims=[1,2,3])
+    #inp_f.AddEquation("X_MIN","X_MAX",dims=[1,2,3])
 
 
     young = params["materials"]["matrix"]["E"]
@@ -75,7 +83,7 @@ def Simulation(params):
     # ============================================
 
     displ_span = np.linspace(0,params["displ"],params["nsteps"])
-
+    displ_span[0] = 1e-2
     for i in range(len(displ_span)):
         istep = inp_f.CreateStaticStep(nlgeom=True)
 
@@ -87,7 +95,7 @@ def Simulation(params):
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
-
-    frd = inp_f.run(output_folder)
+    opts= params["opts"]
+    frd = inp_f.run(output_folder,opt=opts)
 
     return frd

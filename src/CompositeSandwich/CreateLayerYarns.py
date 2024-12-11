@@ -224,6 +224,9 @@ def CreateLayerYarns(params,params_layer):
     
 
 
+    # find  the surface where z=0 and z=Lz
+    tags_max_z = surfaces_in_zLz[0][1]
+    tags_min_z = surfaces_in_z0[0][1]
     gmsh.model.occ.synchronize()
 
-    return tags_min_x, tags_max_x, tags_min_y, tags_max_y
+    return tags_min_x, tags_max_x, tags_min_y, tags_max_y, tags_min_z, tags_max_z,hollow_box

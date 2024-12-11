@@ -67,6 +67,16 @@ def CreateCompositeSandwich(params):
     ph = gmsh.model.addPhysicalGroup(2,[box_mid_ymax], -1)
     gmsh.model.setPhysicalName(2, ph, "box_mid_ymax")
 
+    surfaces = sorted(surfaces, key=lambda x: x[1][2])
+
+    box_mid_zmin = surfaces[0][0][1]
+    box_mid_zmax = surfaces[-1][0][1]
+
+    ph = gmsh.model.addPhysicalGroup(2,[surfaces[0][0][1]], -1)
+    gmsh.model.setPhysicalName(2, ph, "box_mid_zmin")
+
+    ph = gmsh.model.addPhysicalGroup(2,[surfaces[-1][0][1]], -1)    
+    gmsh.model.setPhysicalName(2, ph, "box_mid_zmax")
 
     # create yarns
     
@@ -86,15 +96,38 @@ def CreateCompositeSandwich(params):
             "Lz" : Lz,
             "angle" : angle_span[i]
         } 
-        tags_min_x, tags_max_x, tags_min_y, tags_max_y = CreateLayerYarns(params,layer_params)
+        tags_min_x, tags_max_x, tags_min_y, tags_max_y,tags_min_z,tags_max_z,holow_box = CreateLayerYarns(params,layer_params)
         layers.append({ 
             "layer_name" : layer_params["layer_name"],
             "tags_min_x" : tags_min_x,
             "tags_max_x" : tags_max_x,
             "tags_min_y" : tags_min_y,
-            "tags_max_y" : tags_max_y
+            "tags_max_y" : tags_max_y,
+            "tags_min_z" : tags_min_z,
+            "tags_max_z" : tags_max_z,
+            "holow_box"  : holow_box
         })
 
+
+    # remove duplicate  
+    
+    gmsh.model.occ.synchronize()
+    
+    gmsh.model.occ.fuse([(2,layers[0]["tags_max_z"])],
+                            [(2,box_mid_zmin           )])
+    
+                             
+    gmsh.model.occ.fuse([(2,layers[1]["tags_min_z"])],
+                            [(2,box_mid_zmax           )])
+    
+
+    
+    # compount box mid with layers
+    holow_box = [ layer["holow_box"][0][0][1] for layer in layers ]
+
+    volumen_fuse = [ (3,box_mid) ] + [ (3,box) for box in holow_box ]
+    gmsh.model.occ.fragment(volumen_fuse,[])
+    gmsh.model.occ.synchronize()
 
     if NLayers == 1:
         CreatePlainLayer(trajs, xlims, ylims, Lx, Ly, Lz, h_mid, radius)
@@ -115,6 +148,9 @@ def CreateCompositeSandwich(params):
     gmsh.model.mesh.generate(3)
     gmsh.model.mesh.setOrder(2)
 
+    gmsh.model.occ.synchronize()
+    gmsh.fltk.run()
+    gmsh.write(output)
     getnodes = lambda tag: np.unique(gmsh.model.mesh.getNodesByElementType(2, tag)[0] )
 
 
@@ -147,12 +183,23 @@ def CreateCompositeSandwich(params):
     nodes_min_y = np.concatenate([ getnodes(i) for i in tags_min_y ])
     nodes_max_y = np.concatenate([ getnodes(i) for i in tags_max_y ])
 
+    nodes_min_z =  [ getnodes(ilayer["tags_min_z"]) for ilayer in layers ]
+    nodes_max_z =  [ getnodes(ilayer["tags_max_z"]) for ilayer in layers ]  
+
+    zmax_nodes = getnodes(box_mid_zmax)
+    zmin_nodes = getnodes(box_mid_zmin)
 
     results = {
         "x_min" : np.unique(nodes_min_x),
         "x_max" : np.unique(nodes_max_x),
         "y_min" : np.unique(nodes_min_y),
-        "y_max" : np.unique(nodes_max_y)
+        "y_max" : np.unique(nodes_max_y),
+        "z_min_ly_1" : np.unique(nodes_min_z[0]),
+        "z_max_ly_1" : np.unique(nodes_max_z[0]),
+        "z_min_ly_2" : np.unique(nodes_min_z[1]),
+        "z_max_ly_2" : np.unique(nodes_max_z[1]),
+        "z_min" : np.unique(zmin_nodes),
+        "z_max" : np.unique(zmax_nodes)
     }
 
     try:
