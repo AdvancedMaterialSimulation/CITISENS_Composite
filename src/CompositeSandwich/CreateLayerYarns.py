@@ -38,20 +38,18 @@ def labeling(ph_surfaces,label):
 
 def CreateLayerYarns(params,params_layer):
 
-    trajs  = params["trajs"]
     r      = params["r"]
-    files  = params["files"]
     xlims  = params["xlims"]
     ylims  = params["ylims"]
     Lx     = xlims[1] - xlims[0]
     Ly     = ylims[1] - ylims[0]
 
-
+    trajs  = params_layer["trajs"]
+    files  = params_layer["files_layer"]
     Lz     = params_layer["Lz"]
     z      = params_layer["z"] + Lz/2
 
     layer_name = params_layer["layer_name"]
-    angle = params_layer["angle"]
     #sync
     gmsh.model.occ.synchronize()  
     pre_exist_volumes = gmsh.model.getEntities(3)
@@ -67,14 +65,7 @@ def CreateLayerYarns(params,params_layer):
 
     # translate yarns
     gmsh.model.occ.translate(yarns, 0, 0, z) 
-   # rotate yarns
-   # 
-    xrot = xlims[0] + Lx/2 
-    yrot = ylims[0] + Ly/2
-    zrot = 0
-    gmsh.model.occ.rotate(yarns, 
-                          xrot, yrot, zrot, 
-                          0, 0, 1, angle) 
+
 
     dz = Lz
 

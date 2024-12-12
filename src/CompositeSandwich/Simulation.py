@@ -44,20 +44,24 @@ def Simulation(params):
 
     Y_MAX_WITHOUT_EDGES = inp_f.CreateNsetFromIds(id_nodes, "Y_MAX_WITHOUT_EDGES")
 
+    XMIN = inp_f.select("X_MIN","nset")
+    XMAX = inp_f.select("X_MAX","nset")
+
+    XMINS_nodes = XMIN.GetNodes(inp_f.nodes)
+    XMAXS_nodes = XMAX.GetNodes(inp_f.nodes)
+
+    XMINS_nodes = XMINS_nodes.sort_values(by=["y","z"])
+    XMAXS_nodes = XMAXS_nodes.sort_values(by=["y","z"])
+
+    XMIN.id_nodes = XMINS_nodes.index
+    XMAX.id_nodes = XMAXS_nodes.index
 
 
-    boxs_solid  = inp_f.select_regex(".*_BOX","elset")
+
+    boxs_solid  = inp_f.select_regex(".*BOX.*","elset")
     yarns_solid = inp_f.select_regex(".*YARN_.*","elset")
 
-    BOX_MID_ZMIN = inp_f.select("BOX_MID_ZMIN","elset")
-    BOX_MID_ZMAX = inp_f.select("BOX_MID_ZMAX","elset")
-
-    LY_1_ZLZ = inp_f.select("LY_1_ZLZ","elset")
-    LY_2_Z0  = inp_f.select("LY_2_Z0","elset")
-
-
-    box_mid     = inp_f.select("BOX_MID","elset")
-    #inp_f.AddEquation("X_MIN","X_MAX",dims=[1,2,3])
+    inp_f.AddEquation("X_MIN","X_MAX",dims=[1,2,3])
 
 
     young = params["materials"]["matrix"]["E"]
@@ -77,7 +81,6 @@ def Simulation(params):
     # inp_f.CreateSolidSection(yarn_solid_2,carbon_material)
     [ inp_f.CreateSolidSection(box,matrix_material) for box in boxs_solid ]
     [ inp_f.CreateSolidSection(yarn,carbon_material) for yarn in yarns_solid ]
-    inp_f.CreateSolidSection(box_mid,matrix_material)
     # ============================================
     # STEP
     # ============================================
