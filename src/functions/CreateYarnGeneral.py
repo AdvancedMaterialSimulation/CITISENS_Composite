@@ -1,6 +1,6 @@
 import gmsh
 import numpy as np
-def reduce_points(trajs, num_points=80,density=None):
+def reduce_points(trajs,radius, num_points=80,density=None):
     """
     Reduce el número de puntos de una trayectoria interpolando uniformemente.
     
@@ -22,6 +22,10 @@ def reduce_points(trajs, num_points=80,density=None):
     
     # Crear una nueva distribución de puntos equidistantes
     ts = np.linspace(0, cum_lengths[-1], num_points)
+    # remove
+    ts = ts[2:-2]
+    # add again the first and last point
+    ts = np.concatenate([[0], ts, [cum_lengths[-1]]])
     
     # Interpolar para obtener los nuevos puntos
     x = np.interp(ts, cum_lengths, trajs[:, 0])
@@ -31,8 +35,26 @@ def reduce_points(trajs, num_points=80,density=None):
     # Combinar las coordenadas en una nueva trayectoria
     reduced_trajs = np.column_stack((x, y, z))
 
+    ts_fine = np.linspace(0, cum_lengths[-1], 10*num_points)
+    x_fine = np.interp(ts_fine, cum_lengths, trajs[:, 0])
+    y_fine = np.interp(ts_fine, cum_lengths, trajs[:, 1])
+    z_fine = np.interp(ts_fine, cum_lengths, trajs[:, 2])
+
+    trajs_fine = np.column_stack((x_fine, y_fine, z_fine))
+
+    trac_vec = np.diff(trajs_fine, axis=0)
+    # last vector must be the same as the last vector in the original trajectory
+    # 
+    trac_vec = np.concatenate((trac_vec, [trac_vec[-1].copy()]), axis=0)
+
+    # traj_vec must have the same length as the original trajectory
+    trac_vec_x = np.interp(ts, ts_fine, trac_vec[:, 0])
+    trac_vec_y = np.interp(ts, ts_fine, trac_vec[:, 1])
+    trac_vec_z = np.interp(ts, ts_fine, trac_vec[:, 2])
+
+    trac_vec = np.column_stack((trac_vec_x, trac_vec_y, trac_vec_z))
     # last points     
-    return reduced_trajs
+    return reduced_trajs, trac_vec
 
 
 # =============================================================================
@@ -47,9 +69,12 @@ def CreateYarn(params):
     file   = params["file"]
     radius = params["radius"]
     density = params["density"] 
-    trajs = reduce_points(trajs, density=density)
+    trajs,trajs_vec = reduce_points(trajs, radius,density=density)
 
-    trajs_vec = np.diff(trajs, axis=0)
+    first_vector_computed = trajs_vec[0].copy()
+    first_vector_computed = first_vector_computed / np.linalg.norm(first_vector_computed)
+    last_vector_computed  = trajs_vec[-1].copy()
+    last_vector_computed = last_vector_computed / np.linalg.norm(last_vector_computed)
 
     distance_to_plausible = lambda x: np.linalg.norm(x - plausible_final, axis=1)
 
@@ -58,7 +83,7 @@ def CreateYarn(params):
     last_vector = last_vector / np.linalg.norm(last_vector)
     last_vector = plausible_final[np.argmin(distance_to_plausible(last_vector))].copy()
 
-    trajs_vec = np.concatenate((trajs_vec, [last_vector]), axis=0)
+    trajs_vec[-1] = last_vector
 
 
     # first vector
@@ -67,7 +92,9 @@ def CreateYarn(params):
     first_vector = plausible_final[np.argmin(distance_to_plausible(first_vector))].copy()
     trajs_vec[0] = first_vector
     # 
-
+    # angle 
+    angle_first = np.arccos(np.dot(first_vector_computed, first_vector))
+    angle_last = np.arccos(np.dot(last_vector_computed, last_vector))
     # Iniciar GMSH
     gmsh.initialize()
     gmsh.option.setNumber("Geometry.Tolerance", 1e-5)  # Ajusta la tolerancia
@@ -88,16 +115,47 @@ def CreateYarn(params):
     # first angle 
 
 
-    for i in range(len(trajs)):
+    # first disk can be a ellipse 
+    x, y, z = trajs[0]
+    r2 = r
+
+    r1 = r / np.cos(angle_first)
+    xAxis = np.cross(trajs_vec[0], [0,0,1])
+    disk = gmsh.model.occ.addEllipse(x, y, z, 
+                                      r1, r2, id, 
+                                      zAxis=trajs_vec[0], 
+                                      xAxis=xAxis)
+    disks.append(disk)
+    wires.append(gmsh.model.occ.addWire([disk]))
+    id += 1
+    
+    for i in range(1,len(trajs)-1):
         x, y, z = trajs[i]
+
+        # xAxis is trajs_vec[i] and  z = [0,0,1]
+        xAxis = np.cross(trajs_vec[i], [0,0,1])
+
         disk = gmsh.model.occ.addCircle(x, y, z, r, id,
                                         zAxis=trajs_vec[i],
-                                        xAxis=[0,0,1])
+                                        xAxis=xAxis)
         # crear loop from disk
         
         disks.append(disk)
         wires.append(gmsh.model.occ.addWire([disk]))
         id += 1
+
+    # last disk
+    x, y, z = trajs[-1]
+    r2 = r
+    r1 = r / np.cos(angle_last)
+    xAxis = np.cross(trajs_vec[-1], [0,0,1])
+    disk = gmsh.model.occ.addEllipse(x, y, z, 
+                        r1, r2, id, 
+                        zAxis=trajs_vec[-1], 
+                        xAxis=xAxis)
+    disks.append(disk)
+    wires.append(gmsh.model.occ.addWire([disk]))
+    id += 1
 
     gmsh.model.occ.synchronize()
     # addThruSections

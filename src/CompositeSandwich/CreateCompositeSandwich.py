@@ -170,9 +170,9 @@ def CreateCompositeSandwich(params):
     # 
 
     # mesh
-    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*0.11)
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*0.075)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius)
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 20)
+    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 25)
     gmsh.option.setNumber("Mesh.AngleSmoothNormals", 10)
     gmsh.option.setNumber("Mesh.Smoothing", 10)	
     gmsh.option.setNumber("Mesh.Algorithm", 2)

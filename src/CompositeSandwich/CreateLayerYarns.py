@@ -170,7 +170,11 @@ def CreateLayerYarns(params,params_layer):
    # compute number of aristas
 
     # =================================================================================================
+    gmshtol = 1e-5
+    gmsh.option.setNumber("Geometry.Tolerance", gmshtol)
 
+    gmsh.model
+    # =================================================================================================
     tx = -Lx
     ty = 0
     tz = 0
