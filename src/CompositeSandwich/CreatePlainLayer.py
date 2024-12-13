@@ -1,12 +1,16 @@
 import numpy as np
 import gmsh
+from .process_surfaces_in_plane import process_surfaces_in_plane
 
 def CreatePlainLayer(trajs, xlims, ylims, Lx, Ly, Lz, h_mid, radius):
     
+    pre_exist_surfaces = gmsh.model.getEntities(2)
+
     all_points = np.concatenate(trajs)
 
     # select the points have x = 0
-    points = all_points[all_points[:,1] == 0]
+
+    points = all_points[ np.abs(all_points[:,1] - 0) < 1e-3]
     new_points = []
     for i in range(1, len(points)):
         p1 = points[i-1]
@@ -68,4 +72,58 @@ def CreatePlainLayer(trajs, xlims, ylims, Lx, Ly, Lz, h_mid, radius):
     # add physical group cylinders
     for i in range(len(cylinders)):
         ph = gmsh.model.addPhysicalGroup(3,[cylinders[i]], -1)
-        gmsh.model.setPhysicalName(3, ph, "cylinder_"+str(i+1))
+        gmsh.model.setPhysicalName(3, ph, "ly_2_yarn_"+str(i+1))
+
+
+    gmsh.model.occ.synchronize()
+
+    surfaces = []
+    all_surfaces = gmsh.model.getEntities(2)
+    all_surfaces = [i for i in all_surfaces if i not in pre_exist_surfaces]
+
+    for surface in all_surfaces:
+        surfaces.append( (surface, gmsh.model.occ.getCenterOfMass(2, surface[1])) )
+
+    cases = [(0, 0,  'x',"0"), 
+             (0, Lx, 'x',"L"), 
+             (1, 0,  'y',"0"),
+             (1, Ly, 'y',"L")]
+    
+    tags_split = []
+    for coord, value, plane,name in cases:
+        results = process_surfaces_in_plane(surfaces, coord, value, 
+                                            "ly_2_", plane,name)
+        
+        tags_split.append({
+            "cord" : coord,
+            "value" : value,
+            "plane" : plane,
+            "name" : name,
+            "results" : results
+        })
+    # add periodicity
+    tx = -Lx
+    ty = 0
+    tz = 0
+
+    transformation = [  1 ,0 ,0 ,tx ,
+                        0 ,1 ,0 ,ty ,
+                        0 ,0 ,1 ,tz ,
+                        0 ,0 ,0 ,0]
+    
+    tags_min_x = [ i for i in tags_split if     i["plane"] == "x" 
+                                            and i["value"] == 0 ][0]["results"]
+    
+    tags_max_x = [ i for i in tags_split if i["plane"] == "x" 
+                                            and i["value"] == Lx][0]["results"]
+
+ 
+    # sort 
+    tags_max_x = sorted(tags_max_x["rectangle"], key=lambda x: gmsh.model.occ.getCenterOfMass(2,x)[2])
+    tags_min_x = sorted(tags_min_x["rectangle"], key=lambda x: gmsh.model.occ.getCenterOfMass(2,x)[2])
+ 
+    gmsh.model.mesh.setPeriodic(2,tags_min_x ,
+                                  tags_max_x ,transformation)
+ 
+
+    return holow_box, cylinders,tags_split

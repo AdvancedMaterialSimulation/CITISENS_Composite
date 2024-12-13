@@ -44,7 +44,7 @@ def box_labeling(tag, label):
             surf_obj = [s["surface"] for s in surfaces]
             ph = gmsh.model.addPhysicalGroup(2, surf_obj, -1)
             gmsh.model.setPhysicalName(2, ph, name)
-            ph_list[name_nolabel] = surf_obj[0]
+            ph_list[name_nolabel] = surf_obj
 
 
     return ph_list

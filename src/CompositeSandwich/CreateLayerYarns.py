@@ -190,8 +190,8 @@ def CreateLayerYarns(params,params_layer):
     tags_max_x = [ i for i in tags_split if i["plane"] == "x" 
                                             and i["value"] == Lx][0]["results"]
 
-    gmsh.model.mesh.setPeriodic(2,[tags_min_x["rectangle"]] ,
-                                  [tags_max_x["rectangle"]] ,transformation)
+    gmsh.model.mesh.setPeriodic(2,tags_min_x["rectangle"] ,
+                                  tags_max_x["rectangle"] ,transformation)
     
     gmsh.model.mesh.setPeriodic(2,tags_min_x["circles"] ,
                                   tags_max_x["circles"] ,transformation)
@@ -211,8 +211,8 @@ def CreateLayerYarns(params,params_layer):
     tags_min_y = [ i for i in tags_split if i["plane"] == "y"
                                             and i["value"] == 0 ][0]["results"]
     
-    gmsh.model.mesh.setPeriodic(2,[tags_min_y["rectangle"]] ,
-                                    [tags_max_y["rectangle"]] ,transformation)
+    gmsh.model.mesh.setPeriodic(2,tags_min_y["rectangle"] ,
+                                  tags_max_y["rectangle"] ,transformation)
     
     gmsh.model.mesh.setPeriodic(2,tags_min_y["circles"] ,
                                     tags_max_y["circles"] ,transformation)

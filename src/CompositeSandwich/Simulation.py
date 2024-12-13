@@ -33,15 +33,25 @@ def Simulation(params):
     # select the nodes id where x not be 0 or 2*r
 
     df_0 = y_min_nset.GetNodes(inp_f.nodes)
-    id_nodes = df_0[ (df_0.x != 0) & (df_0.x != params["mesh"]["xlims"][1]) ].index.values.copy()
+    # id_nodes = df_0[ (df_0.x != 0) & (df_0.x != params["mesh"]["xlims"][1]) ].index.values.copy()
+    #do it with distances 
+    x0_dist = np.abs(df_0.x - 0)
+    xL_dist = np.abs(df_0.x - params["mesh"]["xlims"][1])
+    th = 1e-3
+    id_nodes  = df_0[ (x0_dist > th) & (xL_dist > th) ].index.values.copy()
 
     Y_MIN_WITHOUT_EDGES = inp_f.CreateNsetFromIds(id_nodes, "Y_MIN_WITHOUT_EDGES")
 
     #Y_MAX_WITHOUT_EDGES
 
     df_0 = y_max_nset.GetNodes(inp_f.nodes)
-    id_nodes = df_0[ (df_0.x != 0) & (df_0.x != params["mesh"]["xlims"][1]) ].index.values.copy()
-
+    # id_nodes = df_0[ (df_0.x != 0) & (df_0.x != params["mesh"]["xlims"][1]) ].index.values.copy()
+    #do it with distances
+    x0_dist = np.abs(df_0.x - 0)
+    xL_dist = np.abs(df_0.x - params["mesh"]["xlims"][1])
+    th = 1e-3
+    id_nodes  = df_0[ (x0_dist > th) & (xL_dist > th) ].index.values.copy()
+    
     Y_MAX_WITHOUT_EDGES = inp_f.CreateNsetFromIds(id_nodes, "Y_MAX_WITHOUT_EDGES")
 
     XMIN = inp_f.select("X_MIN","nset")

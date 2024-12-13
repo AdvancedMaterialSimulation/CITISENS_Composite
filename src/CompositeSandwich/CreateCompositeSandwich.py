@@ -118,11 +118,25 @@ def CreateCompositeSandwich(params):
     # remove duplicate  
     
     gmsh.model.occ.synchronize()
+
     
-    
+    if NLayers == 1:
+       holow_box_plain,cc,tag_split_plain =  CreatePlainLayer(trajs, xlims, ylims, Lx, Ly, Lz, h_mid, radius) 
+       tag_split_plain_x = [it for it in tag_split_plain if it["plane"] == "x"]
+       x0_tag_plain = tag_split_plain_x[0]["results"]["ph_rect"]
+       xL_tag_plain = tag_split_plain_x[1]["results"]["ph_rect"]
+
+       tag_split_plain_y = [it for it in tag_split_plain if it["plane"] == "y"]
+
+       # tag elements from physical group
+    gmsh.model.occ.synchronize()
+
     # compount box mid with layers
     holow_box = [ layer["holow_box"][0][0][1] for layer in layers ]
 
+    if NLayers == 1:
+        holow_box = holow_box + [holow_box_plain[0][0][1]]
+        
     volumen_fuse = [ (3,box_mid) ] + [ (3,box) for box in holow_box ]
     fuse_results = gmsh.model.occ.fragment(volumen_fuse[0:], volumen_fuse[1:])
     gmsh.model.occ.synchronize()
@@ -153,24 +167,29 @@ def CreateCompositeSandwich(params):
     ph_list_ly_mid = box_labeling(volumen_fuse_list[1]["tags"],"layer_mid")
     ph_list_ly_2   = box_labeling(volumen_fuse_list[2]["tags"],"layer_2")
 
-    tags_min_x_rect = [ ph_list_ly_1["x0"],ph_list_ly_mid["x0"],ph_list_ly_2["x0"] ]
-    tags_max_x_rect = [ ph_list_ly_1["xL"],ph_list_ly_mid["xL"],ph_list_ly_2["xL"] ]
+    tags_min_x_rect =  ph_list_ly_1["x0"] + ph_list_ly_mid["x0"] + ph_list_ly_2["x0"] 
+    tags_max_x_rect =  ph_list_ly_1["xL"] + ph_list_ly_mid["xL"] + ph_list_ly_2["xL"] 
 
-    tags_min_y_rect = [ ph_list_ly_1["y0"],ph_list_ly_mid["y0"],ph_list_ly_2["y0"] ]
-    tags_max_y_rect = [ ph_list_ly_1["yL"],ph_list_ly_mid["yL"],ph_list_ly_2["yL"] ]
+    if NLayers == 1:
+        x0_list = gmsh.model.getEntitiesForPhysicalGroup(2,x0_tag_plain).tolist()
+        xL_list = gmsh.model.getEntitiesForPhysicalGroup(2,xL_tag_plain).tolist()
+        tags_min_x_rect = tags_min_x_rect + x0_list
+        tags_max_x_rect = tags_max_x_rect + xL_list
+
+    tags_min_y_rect =  ph_list_ly_1["y0"] + ph_list_ly_mid["y0"] + ph_list_ly_2["y0"] 
+    tags_max_y_rect =  ph_list_ly_1["yL"] + ph_list_ly_mid["yL"] + ph_list_ly_2["yL"] 
 
 
     gmsh.model.occ.synchronize()
 
-    if NLayers == 1:
-        CreatePlainLayer(trajs, xlims, ylims, Lx, Ly, Lz, h_mid, radius)
+
     # =======================================================================
     # face_circular_xmin and face_circular_xmax are the same must periodic
     # =======================================================================
     # 
 
     # mesh
-    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*0.075)
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*0.1)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius)
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 25)
     gmsh.option.setNumber("Mesh.AngleSmoothNormals", 10)
@@ -199,7 +218,15 @@ def CreateCompositeSandwich(params):
     tag_max_y_circles = np.concatenate([ layer["tags_max_y"]["circles"] for layer in layers ])
     tags_max_y = np.concatenate([tag_max_y_circles,tags_max_y_rect])
 
-    
+    if NLayers == 1:
+
+        rxr = np.array(tag_split_plain_y[0]["results"]["circles"])
+        tags_min_y = np.concatenate([tags_min_y,rxr])
+
+        rxr = np.array(tag_split_plain_y[1]["results"]["circles"])
+        tags_max_y = np.concatenate([tags_max_y,rxr])
+
+
     # unique 
     tags_min_x = np.unique(tags_min_x)
     tags_max_x = np.unique(tags_max_x)
