@@ -6,3 +6,5 @@ output/
 *.pyc
 scripts/SandwichRVE/.opt
 output.msh
+*.stp 
+*.msh

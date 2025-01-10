@@ -89,7 +89,7 @@ def Simulation(params):
     # inp_f.CreateSolidSection(box_solid,matrix_material)
     # inp_f.CreateSolidSection(yarn_solid_1,carbon_material)
     # inp_f.CreateSolidSection(yarn_solid_2,carbon_material)
-    [ inp_f.CreateSolidSection(box,matrix_material) for box in boxs_solid ]
+    [ inp_f.CreateSolidSection(box,matrix_material) for box in   ]
     [ inp_f.CreateSolidSection(yarn,carbon_material) for yarn in yarns_solid ]
     # ============================================
     # STEP
