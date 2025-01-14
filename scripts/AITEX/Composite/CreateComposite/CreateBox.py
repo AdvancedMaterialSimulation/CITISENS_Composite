@@ -4,27 +4,9 @@ import os
 import numpy as np
 from CompositeSandwich.box_labeling import box_labeling
 from .SetNames import SetNames
+from ..inp.are_coplanar import are_coplanar
 
 
-def are_coplanar(points):
-    # Se asume que 'points' es una lista de listas, donde cada lista interna representa las coordenadas de un punto [x, y, z].
-    if len(points) < 4:
-        # Menos de cuatro puntos siempre son coplanares.
-        return True
-    
-    # Seleccionar el primer punto como referencia.
-    reference_point = points[0]
-    # Crear vectores desde el punto de referencia hasta los otros puntos.
-    vectors = [np.array(point) - np.array(reference_point) for point in points[1:]]
-    
-    # Crear una matriz a partir de estos vectores.
-    matrix = np.stack(vectors).T
-    
-    # Calcular el rango de la matriz.
-    rank = np.linalg.matrix_rank(matrix)
-    
-    # Si el rango es menor o igual a 2, los puntos son coplanares.
-    return rank <= 2
 
 def CreateBox(params_yarns,output_folder):
 
@@ -48,12 +30,12 @@ def CreateBox(params_yarns,output_folder):
     gmsh.initialize()
     gmsh.clear()
 
-    fc_mesh_min = 0.8
+    fc_mesh_min = 0.5
     fc_mesh_max = 2.0
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*fc_mesh_min)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius*fc_mesh_max)
 
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 40)
+    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 30)
     gmsh.option.setNumber("Mesh.Algorithm", 2)
     gmsh.option.setNumber("Mesh.Optimize", 1)
     gmsh.option.setNumber("Mesh.OptimizeNetgen", 1)
@@ -95,9 +77,29 @@ def CreateBox(params_yarns,output_folder):
             gmsh.model.addPhysicalGroup(3, [new_vols[0][1]] , tag=-1,name=name+"_yarn")
             # surface boundary
             surfaces_interface =  gmsh.model.getBoundary(new_vols[:1])
-            points = [ gmsh.model.getBoundary([isurf], recursive=True) for isurf in surfaces_interface]l
+            surfaces_interface = [ (dim,abs(tag)) for dim,tag in surfaces_interface]
 
-            gmsh.model.addPhysicalGroup(2, [i[1] for i in surfaces_interface[:1]], tag=-1,name=name+"_interface")
+            # len of points 
+            
+            gmsh.model.occ.synchronize()
+
+            points = [ gmsh.model.getBoundary([isurf], recursive=True) for isurf in surfaces_interface]
+
+            len_points = [ len(ipoint) for ipoint in points]
+
+            points_mu = [ gmsh.model.occ.getCenterOfMass(2, isurf[1]) for isurf in surfaces_interface]
+            points_coord = [ [gmsh.model.getValue(0,i[1],[]) for i in ipoint] for ipoint in points]
+            # add the point mu to the points_coord
+            points_coord = [ [imu] + ipoint for imu,ipoint in zip(points_mu,points_coord)]
+
+            interface_bool = [not are_coplanar(ipoint) for ipoint in points_coord]
+
+            surfaces_interface_selected = [isurf for isurf,ibool in zip(surfaces_interface,interface_bool) if ibool]
+
+            if len(surfaces_interface_selected) == 0:
+                surfaces_interface_selected = [isurf for isurf,ilen in zip(surfaces_interface,len_points) if ilen == 2]
+
+            gmsh.model.addPhysicalGroup(2, [i[1] for i in surfaces_interface_selected], tag=-1,name=name+"_interface")
 
 
     gmsh.model.occ.synchronize()
@@ -228,6 +230,28 @@ def CreateBox(params_yarns,output_folder):
 
     # save geo ad brep
     gmsh.write(os.path.join(*output_folder,"composite.brep"))
+
+
+    # Sincronizar geometría
+    gmsh.model.geo.synchronize()
+
+    # Obtener todas las superficies
+    all_surfaces = gmsh.model.getEntities(2)
+
+    # Obtener las superficies con Physical Groups
+    physical_surfaces = set()
+    for dim, tag in gmsh.model.getPhysicalGroups():
+        physical_surfaces.update(gmsh.model.getEntitiesForPhysicalGroup(dim, tag))
+
+    # Identificar superficies sin Physical Groups
+    surfaces_without_physical = [s for s in all_surfaces if s not in physical_surfaces]
+
+    # Eliminar superficies sin Physical Groups
+    for dim, tag in surfaces_without_physical:
+        gmsh.model.geo.remove([(dim, tag)])
+
+    # Sincronizar después de eliminar
+    gmsh.model.geo.synchronize()
 
     print(50*"*")
     print("The Geometry is ready to be meshed")

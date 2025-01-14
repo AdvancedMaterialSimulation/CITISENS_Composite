@@ -102,6 +102,8 @@ def CreateYarn(params):
     gmsh.option.setNumber("Geometry.Tolerance", 1e-5)  # Ajusta la tolerancia
     #verbose of 
     gmsh.option.setNumber("General.Terminal", 0)
+    gmsh.option.setNumber("General.Verbosity", 0)
+
 
     gmsh.model.add("Fourier_Cylinder_OCC_Pipe")
 

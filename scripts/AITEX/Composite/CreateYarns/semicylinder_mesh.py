@@ -14,10 +14,12 @@ def semicylinder_mesh(itraj,radius,file):
         angle = np.pi if r0[1] == 0 else 0
 
     gmsh.initialize()
+    # verbose 0
     #clear
     gmsh.clear()
     #verbose 0
     gmsh.option.setNumber("General.Terminal", 0)
+    gmsh.option.setNumber("General.Verbosity", 0)
     gmsh.model.add("composite")
 
     # circle 

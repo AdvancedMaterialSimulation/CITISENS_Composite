@@ -6,6 +6,8 @@ def cutgeo(file_1,file_2,file):
 
     # load 
     gmsh.option.setNumber("General.Terminal", 0)
+    gmsh.option.setNumber("General.Verbosity", 0)
+
     gmsh.model.add("composite")
 
     gmsh.model.occ.synchronize()

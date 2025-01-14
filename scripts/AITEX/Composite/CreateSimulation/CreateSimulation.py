@@ -21,8 +21,10 @@ def CreateSimulation(composite):
     YL_PLANE_NSET = CreateNsetFromElset(inp_f,YL_PLANE,name="YL_PLANE")
 
     inp_f.remove_by_type(1)
-    inp_f.remove_by_type(2)
+    # inp_f.remove_by_type(2)
 
+    # SURFACE_ELSET = inp_f.select_regex(".*SURFACE.*","elset")
+    # inp_f.cards = [ card for card in inp_f.cards if card.type != "*ELEMENT" ]
     yarns_elsets = inp_f.select_regex(".*YARN.*","elset")
     elset_yarns = CreateElsetFromElsets(inp_f,yarns_elsets,"YARNS")
 
@@ -64,13 +66,15 @@ def CreateSimulation(composite):
     inp_f.CreateSolidSection(alma_elset,matrix_material)
 
     if "interface_elset" in locals():
-        inp_f.CreateSolidSection(interface_elset,matrix_material)
+        # inp_f.CreateSolidSection(interface_elset,matrix_material)
+        inp_f.CreateShellSection(interface_elset,matrix_material)
 
     istep = inp_f.CreateStaticStep(nlgeom=False)
 
     istep.CreateBoundary(Y0_PLANE_NSET,dim=2,displ=0)
     istep.CreateBoundary(YL_PLANE_NSET,dim=2,displ=0.2)
 
+    return inp_f
     output_folder = "output/ccx"
 
     opt= {

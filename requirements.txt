@@ -2,6 +2,6 @@ ipykernel
 gmsh
 matplotlib
 numpy
-djccx @ git+https://github.com/djoroya/djccx.git
+djccx @ git+https://github.com/AdvancedMaterialSimulation/djccx
 runstep @ git+https://github.com/djoroya/runstep.git
 djgit @ git+https://github.com/djoroya/djgit.git

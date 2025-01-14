@@ -19,6 +19,8 @@ def CreateComposite(params):
     assert h > 0, "h must be positive"
     
     gmsh.initialize()
+    gmsh.option.setNumber("General.Verbosity", 0)
+
     gmsh.model.add("fourier_cylinder_occ_pipe")
 
     gmsh.option.setNumber("General.Terminal", 0)

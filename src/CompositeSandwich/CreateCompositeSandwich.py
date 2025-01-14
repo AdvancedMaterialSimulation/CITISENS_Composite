@@ -11,6 +11,8 @@ def CreateCompositeSandwich(params):
     gmsh.initialize()
     #verbose 0
     gmsh.option.setNumber("General.Terminal", 0)
+    gmsh.option.setNumber("General.Verbosity", 0)
+
     gmsh.model.add("composite")
 
     h_mid = 0.5*radius
