@@ -30,8 +30,10 @@ def CreateBox(params_yarns,output_folder):
     gmsh.initialize()
     gmsh.clear()
 
-    fc_mesh_min = 0.5
-    fc_mesh_max = 2.0
+
+
+    fc_mesh_min = params_yarns["fc_mesh_min"]
+    fc_mesh_max = params_yarns["fc_mesh_max"]
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*fc_mesh_min)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius*fc_mesh_max)
 

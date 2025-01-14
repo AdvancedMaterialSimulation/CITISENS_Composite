@@ -31,11 +31,17 @@ def CreateSimulation(composite):
     box_elsets = inp_f.select_regex(".*BOX.*","elset")
     boxs_elset = CreateElsetFromElsets(inp_f,box_elsets,"BOXS")
 
-    try:
-        interface_elsets = inp_f.select_regex(".*INTERFACE.*","elset")
-        interface_elset = CreateElsetFromElsets(inp_f,interface_elsets,"INTERFACE")
-    except:
-        pass
+
+    no_shell = True
+    
+    if no_shell:
+        inp_f.remove_by_type(2)
+    else:
+        try:
+            interface_elsets = inp_f.select_regex(".*INTERFACE.*","elset")
+            interface_elset = CreateElsetFromElsets(inp_f,interface_elsets,"INTERFACE")
+        except:
+            pass
 
     alma_elset = inp_f.select("ALMA","elset")
 
