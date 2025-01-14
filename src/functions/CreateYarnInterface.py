@@ -97,6 +97,8 @@ def CreateYarn(params):
     angle_last = np.arccos(np.dot(last_vector_computed, last_vector))
     # Iniciar GMSH
     gmsh.initialize()
+    gmsh.clear()
+
     gmsh.option.setNumber("Geometry.Tolerance", 1e-5)  # Ajusta la tolerancia
     #verbose of 
     gmsh.option.setNumber("General.Terminal", 0)

@@ -6,7 +6,7 @@ def LayerX(Lx=1,Ly=1, Nx=10):
     dx = Lx/Nx
 
 
-    tspan = np.linspace(0,1,1000)
+    tspan = np.linspace(0,1,2000)
 
     trajs = []
     for i in range(Nx+1):
@@ -22,8 +22,9 @@ def LayerX(Lx=1,Ly=1, Nx=10):
 def LayerY(Lx=1,Ly=1, Ny=10):
 
     dy = Ly/Ny
+    tspan = np.linspace(0,1,2000)
 
-    tspan = np.linspace(0,1,1000)
+
 
     trajs = []
     for i in range(Ny+1):
