@@ -37,14 +37,13 @@ def CreateBox(params_yarns,output_folder):
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*fc_mesh_min)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius*fc_mesh_max)
 
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 20)
-    gmsh.option.setNumber("Mesh.Algorithm", 2)
-    gmsh.option.setNumber("Mesh.Optimize", 1)
+    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 30) # 20
+    gmsh.option.setNumber("Mesh.Algorithm", 4)
+    # gmsh.option.setNumber("Mesh.Optimize", 1)
     gmsh.option.setNumber("Mesh.OptimizeNetgen", 1)
     gmsh.option.setNumber("Mesh.HighOrderOptimize", 2)
     # gmsh.option.setNumber("Mesh.Smoothing", 10)
 
-    # Agregar un campo de tipo "Box"
 
 
 
@@ -264,22 +263,28 @@ def CreateBox(params_yarns,output_folder):
     # Configurar los límites de la caja en el espacio
     def setmeshfield(zmin,zmax):
         box_field = gmsh.model.mesh.field.add("Box")
-        gmsh.model.mesh.field.setNumber(box_field, "VIn", radius * fc_mesh_min)  # Tamaño dentro del box
-        gmsh.model.mesh.field.setNumber(box_field, "VOut", radius * fc_mesh_min) # Tamaño fuera del box
+        factor = 0.5
+        mesh_size = radius * ( factor * fc_mesh_min + (1 - factor) * fc_mesh_max)
+        gmsh.model.mesh.field.setNumber(box_field, "VIn",  mesh_size)  # Tamaño dentro del box
+        gmsh.model.mesh.field.setNumber(box_field, "VOut", mesh_size) # Tamaño fuera del box
         gmsh.model.mesh.field.setNumber(box_field, "XMin", -0.1)  # Límites en X
         gmsh.model.mesh.field.setNumber(box_field, "XMax", 1.1*Lx)
         gmsh.model.mesh.field.setNumber(box_field, "YMin", 0.1)  # Límites en Y
         gmsh.model.mesh.field.setNumber(box_field, "YMax", 1.1*Ly)
         gmsh.model.mesh.field.setNumber(box_field, "ZMin", zmin)  # Límites en Z
         gmsh.model.mesh.field.setNumber(box_field, "ZMax", zmax)
-        print("zmin"    , zmin)
-        print("zmax"    , zmax)
-        print("meshsize", radius * fc_mesh_min)
+
+        print("z in [zmin,zmax]: [",zmin,",",zmax,"]")
+        print("meshsize", mesh_size)
+
+        return box_field
 
     
-    setmeshfield(0, z0/2)
-    setmeshfield(-z0/2,0)
+    bf_1 = setmeshfield(-z0,z0)
+    gmsh.model.mesh.field.setAsBackgroundMesh(bf_1)
 
+    # setmeshfield(-z0/2,0)
+    # 
     gmsh.model.geo.synchronize()
 
     print(50*"*")
@@ -289,11 +294,18 @@ def CreateBox(params_yarns,output_folder):
 
     # gmsh.option.setNumber("Mesh.OptimizeThreshold", 0.1)
 
+
     try:
         gmsh.model.mesh.generate(3)
     except Exception as e:
         print("Error: ",e)
         gmsh.fltk.run()
+
+
+
+    print("Optimizing mesh ... ")
+    gmsh.model.mesh.optimize("Netgen")
+    # Agregar un campo de tipo "Box"
 
     gmsh.model.mesh.setOrder(2)
     # inp 

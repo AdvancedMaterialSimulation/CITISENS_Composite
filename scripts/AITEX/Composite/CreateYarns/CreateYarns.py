@@ -20,12 +20,15 @@ def CreateYarns(params,output_folder):
     z0 = params["z0"]
     Lx = params["Lx"]
     Ly = params["Ly"]
+    mirror = params["mirror"]
     interface_factor = params["interface_factor"]
     density = params["density"]
     names =["minus","plus"]
     with_interface = params["with_interface"]
 
     for k,isign in enumerate([-1,1]):
+        if mirror and isign == -1:
+            continue
         for j,trajs in enumerate(trajs_layers):
             
             for i,itraj in enumerate(trajs):

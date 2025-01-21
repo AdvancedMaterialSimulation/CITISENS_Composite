@@ -3,7 +3,7 @@ from Composite.inp.CreateNsetFromElset import CreateNsetFromElset
 from Composite.inp.CreateElsetFromElsets import CreateElsetFromElsets
 from validation.experimental import carbonfiber,resina
 import os
-def CreateSimulation(composite):
+def CreateSimulation(composite,no_shell=True):
 
     inp_f = inp(os.path.join(composite,
                              "composite.inp"))
@@ -20,6 +20,12 @@ def CreateSimulation(composite):
     XL_PLANE_NSET = CreateNsetFromElset(inp_f,XL_PLANE,name="XL_PLANE")
     YL_PLANE_NSET = CreateNsetFromElset(inp_f,YL_PLANE,name="YL_PLANE")
 
+    PLUS_ZL_PLANE = inp_f.select("PLUS_ZL","elset")
+    ALMA_Z0_PLANE = inp_f.select("ALMA_Z0","elset")
+
+    PLUS_ZL_PLANE_NSET = CreateNsetFromElset(inp_f,PLUS_ZL_PLANE,name="PLUS_ZL_PLANE")
+    ALMA_Z0_PLANE_NSET = CreateNsetFromElset(inp_f,ALMA_Z0_PLANE,name="ALMA_Z0_PLANE")
+
     inp_f.remove_by_type(1)
     # inp_f.remove_by_type(2)
 
@@ -32,7 +38,6 @@ def CreateSimulation(composite):
     boxs_elset = CreateElsetFromElsets(inp_f,box_elsets,"BOXS")
 
 
-    no_shell = True
     
     if no_shell:
         inp_f.remove_by_type(2)
@@ -72,13 +77,16 @@ def CreateSimulation(composite):
     inp_f.CreateSolidSection(alma_elset,matrix_material)
 
     if "interface_elset" in locals():
-        # inp_f.CreateSolidSection(interface_elset,matrix_material)
-        inp_f.CreateShellSection(interface_elset,matrix_material)
+        inp_f.CreateSolidSection(interface_elset,matrix_material)
+        #inp_f.CreateShellSection(interface_elset,matrix_material)
 
     istep = inp_f.CreateStaticStep(nlgeom=False)
 
     istep.CreateBoundary(Y0_PLANE_NSET,dim=2,displ=0)
     istep.CreateBoundary(YL_PLANE_NSET,dim=2,displ=0.2)
+
+
+    istep.CreateBoundary(ALMA_Z0_PLANE_NSET,dim=3,displ=0.0)
 
     return inp_f
     output_folder = "output/ccx"
