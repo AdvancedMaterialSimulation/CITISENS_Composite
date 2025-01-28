@@ -1,7 +1,13 @@
 import pandas as pd
 import numpy as np
 def CreateNsetFromElset(inp_f,elset,name=None):
-
+    """
+    Create a node set from an element set
+    # Input:
+    -  `inp_f` : inp object
+    - elset : Elset object
+    - name : str (optional) a name for the node set 
+    """
     elements = inp_f.elements
     # only 2d 
     elements = [ iel for iel in elements if iel.elements.shape[1] == 6]

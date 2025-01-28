@@ -109,17 +109,26 @@ def CreateBoxMirror(params_yarns,output_folder):
     yarns_vols = gmsh.model.getEntities(3)
 
     # box 
-    big_box = gmsh.model.occ.addBox(0, 0, 0, 
+
+
+    if params_yarns["z0"] != 0:
+        big_box = gmsh.model.occ.addBox(0, 0, 0, 
                         Lx, Ly,zT/2)
 
-    mid_box = gmsh.model.occ.addBox(0 , 0 , 0, 
-                        Lx, Ly, z0/2)
+        mid_box = gmsh.model.occ.addBox(0 , 0 , 0, 
+                            Lx, Ly, z0/2)
+        
+        # cut the box 
+        gmsh.model.occ.cut([(3, big_box)], [(3, mid_box)], removeTool=False)
 
-
-    # cut the box 
-    gmsh.model.occ.cut([(3, big_box)], [(3, mid_box)], removeTool=False)
-
+    else:
+        big_box = gmsh.model.occ.addBox(0, 0, -h/2, 
+                        Lx, Ly,h)
+        
     gmsh.model.occ.synchronize()
+
+    #gmsh.fltk.run()
+
 
 
     box_vols = gmsh.model.getEntities(3)
@@ -135,27 +144,58 @@ def CreateBoxMirror(params_yarns,output_folder):
     gmsh.model.occ.synchronize()    
 
 
-    def draw_plane(z):
+    COM = [ gmsh.model.occ.getCenterOfMass(3, ibox[1]) for ibox in final_obj_box]
+    # sort by z
+    id_com = sorted(range(len(COM)), key=lambda k: COM[k][2])
+    final_obj_box = [final_obj_box[i] for i in id_com]
 
-        rect = gmsh.model.occ.addRectangle(0.0, 0.0, z,
-                                            Lx, Ly)
-        gmsh.model.occ.synchronize()
+    if params_yarns["z0"] != 0: 
+        names_box = ["alma","box_plus"]
+    else:
+        names_box = ["box_plus"]
 
-        vols = gmsh.model.getEntities(3)
+    for name, ibox in zip(names_box,final_obj_box):
+        gmsh.model.addPhysicalGroup(3, [ibox[1]], tag=-1,name=name)
 
-        frag = gmsh.model.occ.fragment(vols, [(2, rect)])
 
-        gmsh.model.occ.synchronize()
+    gmsh.model.occ.synchronize()
+
+    if params_yarns["z0"] != 0:
+        box_labeling(final_obj_box[0][1],"alma")
+        box_labeling(final_obj_box[1][1],"plus")
+    else:
+        box_labeling(final_obj_box[0][1],"plus")
+
+    #get all surface cuyo centro de mass este en el plano x=0
+    all_surfaces = gmsh.model.getEntities(2)
+
+    # get the center of mass of the surfaces
+    COM = [ gmsh.model.occ.getCenterOfMass(2, isurf[1]) for isurf in all_surfaces]
+
+    # tol 
+    COM = [ [round(i,1) for i in icom] for icom in COM]
+    planes = [
+        ("x0_plane", 0, 1e-6, 0),  # (name, index to check, tolerance, offset)
+        ("y0_plane", 1, 1e-6, 0),
+        ("xL_plane", 0, 1e-6, Lx),
+        ("yL_plane", 1, 1e-6, Ly)
+    ]
+
+    # Iterar sobre cada plano especificado
+    surfaces_limits = []
+    for name, idx, tol, offset in planes:
+        # Seleccionar superficies que están cerca del plano definido
+        id_com = [i for i, com in enumerate(COM) if abs(com[idx] - offset) < tol]
+        surfaces_limits.append(id_com)
         
-        return frag
-    print("Drawing planes 1 ... ")
-    draw_plane(z0/2 + 0.5*h)
-    print("Drawing planes 2 ... ")
-    draw_plane(z0/2 + 1.5*h)
-    print("Drawing planes 3 ... ")
-    draw_plane(z0/2 + 2.5*h)
+        # Añadir grupo físico con las superficies seleccionadas
+        gmsh.model.addPhysicalGroup(2, [all_surfaces[i][1] for i in id_com], tag=-1, name=name)
 
 
+
+    # 1) Eliminar entidades duplicadas
+    gmsh.model.occ.removeAllDuplicates()
+    
     # write .brep 
     gmsh.model.occ.synchronize()
     gmsh.write(os.path.join(*output_folder,"composite.brep"))
@@ -164,10 +204,12 @@ def CreateBoxMirror(params_yarns,output_folder):
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*fc_mesh_min)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius*fc_mesh_max)
 
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature",50) # 20
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvatureIsotropic",1) # True
+    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature",25) # 20
+    # gmsh.option.setNumber("Mesh.MeshSizeFromCurvatureIsotropic",1) # True
     gmsh.option.setNumber("Mesh.Algorithm", 1)
-    gmsh.option.setNumber("Mesh.SubdivisionAlgorithm", 1)
+    # gmsh.option.setNumber("Mesh.Algorithm3D", 2)
+
+    # gmsh.option.setNumber("Mesh.SubdivisionAlgorithm", 1)
     # gmsh.option.setNumber("Mesh.Optimize", 1)
     # gmsh.option.setNumber("Mesh.OptimizeNetgen", 1)
     # gmsh.option.setNumber("Mesh.HighOrderOptimize", 2)
@@ -182,11 +224,16 @@ def CreateBoxMirror(params_yarns,output_folder):
 
 
 
-    # print("Optimizing mesh ... ")
-    gmsh.model.mesh.optimize("Netgen")
+    print("Optimizing mesh ... ")
+    gmsh.model.mesh.setOrder(2)
+    #gmsh.write(os.path.join(*output_folder,"composite_pre.inp"))
+
+    gmsh.model.mesh.optimize("HighOrderElastic",niter=10)  # Prueba con Netgen u otro método
+
+    #recombine
+    # gmsh.model.mesh.recombine()
     # Agregar un campo de tipo "Box"
 
-    gmsh.model.mesh.setOrder(2)
     # inp 
     gmsh.write(os.path.join(*output_folder,"composite.inp"))
 

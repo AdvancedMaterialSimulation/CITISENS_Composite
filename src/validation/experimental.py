@@ -57,3 +57,10 @@ def carbonfiber():
         "carbon": data,
         "poisson ratio": 0.3
     }
+
+def nucleo():
+
+    return {
+        "young modulus [MPa]": 800,
+        "poisson ratio": 0.3
+    }

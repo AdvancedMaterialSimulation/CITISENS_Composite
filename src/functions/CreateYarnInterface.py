@@ -1,5 +1,18 @@
 import gmsh
 import numpy as np
+
+def nearest_multiple_of_six(n):
+    # Encuentra el múltiplo de 6 más cercano hacia abajo
+    lower = n - (n % 6)
+    # Encuentra el múltiplo de 6 más cercano hacia arriba
+    upper = lower if n % 6 == 0 else lower + 6
+    
+    # Determina cuál múltiplo está más cerca del número original
+    if (n - lower) <= (upper - n):
+        return lower
+    else:
+        return upper
+    
 def reduce_points(trajs,radius, num_points=80,density=None):
     """
     Reduce el número de puntos de una trayectoria interpolando uniformemente.
@@ -16,6 +29,8 @@ def reduce_points(trajs,radius, num_points=80,density=None):
         long = np.linalg.norm(np.diff(trajs, axis=0), axis=1)
         long  = np.sum(long)
         num_points = int(long*density)
+        # debera ser multiplo de 6 + 4 
+        #num_points = nearest_multiple_of_six(num_points) + 2 + 1
     diff = np.diff(trajs, axis=0)
     segment_lengths = np.linalg.norm(diff, axis=1)
     cum_lengths = np.concatenate([[0], np.cumsum(segment_lengths)])  # Longitud acumulada
@@ -54,6 +69,7 @@ def reduce_points(trajs,radius, num_points=80,density=None):
 
     trac_vec = np.column_stack((trac_vec_x, trac_vec_y, trac_vec_z))
     # last points     
+    #print(len(reduced_trajs))
     return reduced_trajs, trac_vec
 
 

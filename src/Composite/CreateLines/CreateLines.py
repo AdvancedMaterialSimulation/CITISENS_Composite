@@ -37,6 +37,7 @@ def CreateLines(params):
     design_E = [trajs_X,trajs_SY,trajs_SX]
     design_F = [trajs_X,trajs_Y,trajs_SY,trajs_SX]
 
+    design_B1 = [trajs_Y]
     
 
     designs = {"A" : design_A,
@@ -44,7 +45,8 @@ def CreateLines(params):
                "C" : design_C,
                "D" : design_D,
                "E" : design_E,
-               "F" : design_F}
+               "F" : design_F,
+               "B1": design_B1}
     
     # list to dict
     
