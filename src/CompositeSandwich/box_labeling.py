@@ -3,7 +3,51 @@ import gmsh
 import numpy as np
 
 def box_labeling(tag, label):
+    """
+    Etiqueta las superficies de un volumen 3D en un modelo de GMSH basado en sus posiciones 
+    relativas a los límites en las direcciones `x`, `y` y `z`.
 
+    Args:
+        tag (int): Identificador del volumen 3D en el modelo GMSH.
+        label (str): Prefijo para las etiquetas de los grupos físicos.
+
+    Returns:
+        dict: Un diccionario donde las claves son nombres simplificados de las superficies
+              (por ejemplo, "x0", "yL") y los valores son listas de identificadores de superficies 
+              asociadas a cada límite.
+
+    Description:
+        La función realiza las siguientes tareas:
+        1. Obtiene las superficies que delimitan el volumen especificado mediante `getBoundary`.
+        2. Calcula los centros de masa de las superficies para determinar sus posiciones.
+        3. Identifica los límites del volumen en cada dirección (`x`, `y`, `z`) utilizando los 
+           valores mínimo (`0`) y máximo (`L`) de las coordenadas.
+        4. Clasifica las superficies según su proximidad a los límites definidos.
+        5. Crea grupos físicos en GMSH para cada conjunto de superficies en los límites y les 
+           asigna nombres basados en el prefijo `label` y la dirección/límite correspondiente.
+        6. Devuelve un diccionario que asocia las etiquetas de los límites con los identificadores 
+           de las superficies incluidas en cada grupo físico.
+
+    Example:
+        ```python
+        import gmsh
+
+        gmsh.initialize()
+        gmsh.model.add("example")
+        
+        # Crear un cubo como ejemplo
+        cube = gmsh.model.occ.addBox(0, 0, 0, 1, 1, 1)
+        gmsh.model.occ.synchronize()
+
+        # Etiquetar las superficies del cubo
+        labels = box_labeling(cube, "myCube")
+        
+        # Resultado: {"x0": [...], "xL": [...], "y0": [...], "yL": [...], "z0": [...], "zL": [...]}
+        print(labels)
+        
+        gmsh.finalize()
+        ```
+    """
     
     volumen = gmsh.model.getBoundary([(3,tag)], oriented=False)
 

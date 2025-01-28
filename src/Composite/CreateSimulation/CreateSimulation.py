@@ -118,8 +118,9 @@ def CreateSimulation(design_folder,
     if "ALMA_Z0_PLANE_NSET" in locals():
         istep.CreateBoundary(ALMA_Z0_PLANE_NSET,dim=3,displ=0.0)
 
-    istep.CreateBoundary(X0_PLANE_NSET,dim=1,displ=0.0)
-    istep.CreateBoundary(XL_PLANE_NSET,dim=1,displ=0.0)
+    if params["x_fixed"]:
+        istep.CreateBoundary(X0_PLANE_NSET,dim=1,displ=0.0)
+        istep.CreateBoundary(XL_PLANE_NSET,dim=1,displ=0.0)
 
 
 
