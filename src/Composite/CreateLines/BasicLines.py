@@ -1,7 +1,9 @@
 from .layers import LayerX, LayerY
 from .LayerSinX import LayerSinX
 from .LayerSinY import LayerSinY
-import numpy as np
+from .LayerSinX_smooth import LayerSinX_smooth
+from .LayerSinY_smooth import LayerSinY_smooth
+
 def BasicLines(params):
 
     Nx_sq = params["Nx_sq"]
@@ -28,12 +30,16 @@ def BasicLines(params):
 
     trajs_SX = LayerSinX(**S_params) 
     trajs_SY = LayerSinY(**S_params)
+    trajs_SX_smooth = LayerSinX_smooth(**S_params)
+    trajs_SY_smooth = LayerSinY_smooth(**S_params)
 
     return {
         "trajs_X": trajs_X,
         "trajs_Y": trajs_Y,
         "trajs_SX": trajs_SX,
         "trajs_SY": trajs_SY,
+        "trajs_SX_smooth": trajs_SX_smooth,
+        "trajs_SY_smooth": trajs_SY_smooth,
         "Lx": Lx,
         "Ly": Ly
     }

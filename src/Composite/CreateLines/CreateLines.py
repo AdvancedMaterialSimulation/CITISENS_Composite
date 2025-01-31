@@ -8,19 +8,21 @@ def CreateLines(params):
     trajs_Y  = trajs_basic["trajs_Y"]
     trajs_SX = trajs_basic["trajs_SX"]
     trajs_SY = trajs_basic["trajs_SY"]
+    trajs_SX_smooth = trajs_basic["trajs_SX_smooth"]
+    trajs_SY_smooth = trajs_basic["trajs_SY_smooth"]
     # 
     Lx = trajs_basic["Lx"]
     Ly = trajs_basic["Ly"]
 
     # Patrones de diseño
-    design_A = [trajs_X]
-    design_B = [trajs_X,trajs_Y]
-    design_C = [trajs_X,trajs_SX]
-    design_D = [trajs_X,trajs_SY]
-    design_E = [trajs_X,trajs_SY,trajs_SX]
-    design_F = [trajs_X,trajs_Y,trajs_SY,trajs_SX]
+    design_A = [trajs_Y]
+    design_B = [trajs_Y,trajs_X]
+    design_C = [trajs_Y,trajs_SX]
+    design_D = [trajs_Y,trajs_SY]
+    design_E = [trajs_Y,trajs_SY,trajs_SX]
+    design_F = [trajs_Y,trajs_X,trajs_SY,trajs_SX]
 
-    design_B1 = [trajs_Y]
+    design_B1 = [trajs_X]
     
 
     designs = {"A" : design_A,
@@ -29,7 +31,14 @@ def CreateLines(params):
                "D" : design_D,
                "E" : design_E,
                "F" : design_F,
-               "B1": design_B1}
+               "B1": design_B1,
+               "X": [trajs_X],
+                "Y": [trajs_Y],
+                "SX": [trajs_SX],
+                "SY": [trajs_SY],
+                "SX_smooth": [trajs_SX_smooth],
+                "SY_smooth": [trajs_SY_smooth],
+                }
     
     # list to dict
     

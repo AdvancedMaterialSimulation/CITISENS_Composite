@@ -1,7 +1,7 @@
 
 import numpy as np
 
-def LayerX(Lx=1,Ly=1, Nx=10):
+def LayerY(Lx=1,Ly=1, Nx=10):
 
     dx = Lx/Nx
 
@@ -19,7 +19,7 @@ def LayerX(Lx=1,Ly=1, Nx=10):
     
     return trajs
 
-def LayerY(Lx=1,Ly=1, Ny=10):
+def LayerX(Lx=1,Ly=1, Ny=10):
 
     dy = Ly/Ny
     tspan = np.linspace(0,1,2000)

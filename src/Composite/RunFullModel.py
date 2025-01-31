@@ -25,11 +25,17 @@ def RunFullModel(design,root,params):
     print("\t"+"Design %s" % design)
     print("\t"+50*"=")
 
-    GenerateMeshRVE(lines,design,ouput_folder_designs,params["mesh"])
+    GenerateMeshRVE(lines,
+                    design,
+                    ouput_folder_designs,
+                    params["mesh"])
 
     print("\t"+50*"=")
     print("\t"+"CCX %s" % design)
     print("\t"+50*"=")
     print("Input folder: \t", design_folder)
     print("Output folder: \t", output_folder)
-    inpf = CreateSimulation(design_folder,output_folder,params["ccx"],no_shell=True)
+    inpf = CreateSimulation(design_folder,
+                            output_folder,
+                            params["ccx"],
+                            no_shell=True)

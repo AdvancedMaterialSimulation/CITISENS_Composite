@@ -24,6 +24,7 @@ def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
     # in title
     Evec_opt_str = "  ,  ".join([f"{E:.2f}" for E in Evec_opt])
     # E_vec[0],E_vec[1],E_vec[2],E_vec[3] = E_l_X,E_l_Y,E_l_SX,E_l_SY
+
     names = ["X","Y","SX","SY"]
     title_str = "  ,  ".join([f"E_{names[i]} = {Evec_opt[i]:.2f}" for i in range(4)])
     plt.title(f' $E_n = {En_opt:.2f} \\ [GPa]$ |  {title_str}', fontsize=fz)
