@@ -3,7 +3,7 @@ from .LayerSinX import LayerSinX
 from .LayerSinY import LayerSinY
 from .LayerSinX_smooth import LayerSinX_smooth
 from .LayerSinY_smooth import LayerSinY_smooth
-
+import numpy as np
 def BasicLines(params):
 
     Nx_sq = params["Nx_sq"]
@@ -33,7 +33,7 @@ def BasicLines(params):
     trajs_SX_smooth = LayerSinX_smooth(**S_params)
     trajs_SY_smooth = LayerSinY_smooth(**S_params)
 
-    return {
+    r =  {
         "trajs_X": trajs_X,
         "trajs_Y": trajs_Y,
         "trajs_SX": trajs_SX,
@@ -43,3 +43,13 @@ def BasicLines(params):
         "Lx": Lx,
         "Ly": Ly
     }
+
+    # Calculamos las longitudes de cada una de la capas de diseño 
+    trajs_keys = [ i for i in r.keys() if "trajs" in i]
+    longs = [ np.sum([ np.sum( np.sqrt( (c[1:]-c[:-1])**2 ) ) 
+             for c in r[itrajs_keys] ] ) 
+             for itrajs_keys in trajs_keys]
+
+    r["longs"] = {itrajs_keys:longs[i] for i,itrajs_keys in enumerate(trajs_keys)}
+
+    return r

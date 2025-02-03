@@ -3,7 +3,7 @@ from Composite.CreateLines.CreateLines import CreateLines
 from Composite.GenerateMeshRVE import GenerateMeshRVE
 from Composite.CreateSimulation.CreateSimulation import CreateSimulation
 import os 
-
+from loadsavejson.savejson import savejson
 join = os.path.join
 def RunFullModel(design,root,params):
 
@@ -13,8 +13,10 @@ def RunFullModel(design,root,params):
         "Ny_sq": 1,
         "type":  'sin' # 'circle' or 'sin'
     }
-
     lines = CreateLines(lines)
+
+    params["longs"] = lines["longs"]
+    savejson(params,join(root,"params.json"))
 
     ouput_folder_designs = join(root,"designs")
 

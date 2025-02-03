@@ -49,5 +49,6 @@ def CreateLines(params):
     params["designs"] = designs
     params["Lx"] = Lx
     params["Ly"] = Ly
+    params["longs"] = trajs_basic["longs"]
     
     return params
