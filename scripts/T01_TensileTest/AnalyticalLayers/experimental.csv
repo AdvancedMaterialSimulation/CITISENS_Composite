@@ -1,4 +1,4 @@
-Nombre	Tensión máxima Tracción [MPa]	 Alargamiento Tracción [%]	Modulo Tracción [MPa]	Tensión máxima Flexión [MPa]	Módulo flexión [MPa]	F/delta	Julios	Ancho	Espesor (mm)	Seccion sin entalla (mm)	Resiliencia (KJ/m2)	 Espesor 2(mm)
+Name	Tensión máxima Tracción [MPa]	 Alargamiento Tracción [%]	Modulo Tracción [MPa]	Tensión máxima Flexión [MPa]	Módulo flexión [MPa]	F/delta	Julios	Ancho	Espesor (mm)	Seccion sin entalla (mm)	Resiliencia (KJ/m2)	 Espesor 2(mm)
 TFP1-1	293.08	11.88	2838.352941	146.7	13329	937	3.4	15.3	4.9	75	45.2	5.3
 TFP1-1	264.43	11.66	2685.491071	145.2	13758	971	4.3	15.2	4.9	74.5	57.5	5.3
 TFP1-1	279.8	13.46	3132.683658	113.1	12516	838	3.9	15.5	5	77.5	50.8	5.2

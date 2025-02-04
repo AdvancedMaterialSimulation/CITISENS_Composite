@@ -64,3 +64,30 @@ def nucleo():
         "young modulus [MPa]": 800,
         "poisson ratio": 0.3
     }
+
+def full_experiment():
+
+    file_path = os.path.join(folder, 'full_data.csv')
+
+    df = pd.read_csv(file_path)
+    df["Modulo (GPa)"] = df["Modulo (MPa)"] * 1e-3
+    df["Modulo flexion (GPa)"] = df["Modulo flexion (MPa)"] * 1e-3
+    # 
+    # pop
+    df = df.drop(columns=["Modulo (MPa)", "Modulo flexion (MPa)"])
+    df.head()
+    return df
+
+
+def manual_data():
+
+    t_nucleo_exp_inches = 0.11
+    t_nucleo_exp = t_nucleo_exp_inches * 25.4
+
+    Tau_jorge_inches = 0.191
+    Tau_jorge = Tau_jorge_inches * 25.4
+
+    return {
+        "t_nucleo [mm]": t_nucleo_exp,
+        "t total [mm]": Tau_jorge
+    }

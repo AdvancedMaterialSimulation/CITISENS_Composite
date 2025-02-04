@@ -8,7 +8,7 @@ def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
     # bar plot tau_exp and tau_pred in the same plot separated by a gap
     xspan = range(len(df_stats.index))
     # ax.bar([x-offset for x in xspan], tau_exp, width=offset, label='Experimental')
-    error = df_stats['E [GPa]']['std'].values
+    error = df_stats['Modulo (GPa)']['std'].values
     ax.bar([x-offset for x in xspan], E_eff_exp, yerr=error, width=offset, label='Experimental', capsize=5)
     ax.bar([x+offset for x in xspan], E_eff_pred, width=offset, label='Predicted')
     ax.set_xticks(xspan);

@@ -1,6 +1,6 @@
 from djccx.inp.inp import inp
 import os,shutil
-from Composite.CreateComposite.CreateComposite import CreateComposite
+from .CreateComposite.CreateComposite import CreateComposite
 
 
 fc_mesh_max_d = {
