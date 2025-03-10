@@ -22,7 +22,6 @@ def RunBlock(params):
 
     Lx = 2.0
     Ly = 10.0 # lo mas grande posible
-    
     radius = np.sqrt(Lx*Ly*volume_fraction/np.pi)
 
 
@@ -69,7 +68,9 @@ def RunBlock(params):
     gmsh.model.setPhysicalName(3, mid_ph, "MIDDLE")
 
     # Box labeling 
-    box_labeling(matrix_tag,"MATRIX") 
+    box_labeling(matrix_tag,"MATRIX")
+
+    box_labeling(cylinder,"CYLINDER") 
 
     gmsh.model.occ.synchronize()
 
@@ -99,6 +100,18 @@ def RunBlock(params):
     top_surf_elset = inp_f.select("MATRIX_ZL","elset") # Este viene de la función box_labeling
     top_nset= CreateNsetFromElset(inp_f, top_surf_elset, "top")
 
+    ymin_elset = inp_f.select("MATRIX_Y0","elset") # Este viene de la función box_labeling
+    ymin_nset= CreateNsetFromElset(inp_f, ymin_elset, "ymin")
+
+    ymin_cyl = inp_f.select("CYLINDER_Y0","elset") # Este viene de la función box_labeling
+    ymin_cyl_nset= CreateNsetFromElset(inp_f, ymin_cyl, "ymin_cyl")
+
+    ymax_elset = inp_f.select("MATRIX_YL","elset") # Este viene de la función box_labeling
+    ymax_nset= CreateNsetFromElset(inp_f, ymax_elset, "ymax")
+
+    ymax_cyl = inp_f.select("CYLINDER_YL","elset") # Este viene de la función box_labeling
+    ymax_cyl_nset= CreateNsetFromElset(inp_f, ymax_cyl, "ymax_cyl")
+
     mat_m = inp_f.CreateElasticMaterial("resina", Em, vm)
     mat_c = inp_f.CreateElasticMaterial("carbon", Ec, vc)
 
@@ -124,6 +137,13 @@ def RunBlock(params):
     istep = inp_f.CreateStaticStep()
     istep.CreateBoundary(top_nset,3,Z_displ)
     istep.CreateBoundary(bot_nset,3,0.0)
+
+    #
+    istep.CreateBoundary(ymin_nset,2,0.0)
+    istep.CreateBoundary(ymin_cyl_nset,2,0.0)
+    # 
+    istep.CreateBoundary(ymax_nset,2,0.0)
+    istep.CreateBoundary(ymax_cyl_nset,2,0.0)
 
     # remove output folder
 

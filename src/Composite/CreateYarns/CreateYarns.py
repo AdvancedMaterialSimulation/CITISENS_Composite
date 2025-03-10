@@ -2,9 +2,11 @@
 from copy import deepcopy
 from .is_semicylinder_mesh import is_semicylinder_mesh
 from .semicylinder_mesh import semicylinder_mesh
+from .semiellipse_mesh import semiellipse_mesh
 from .cutgeo import cutgeo
 
 from functions.CreateYarnInterface import CreateYarn
+from functions.CreateYarnInterfaceRect import CreateYarnRect
 import os
 import numpy as np
 
@@ -17,14 +19,16 @@ def CreateYarns(params,output_folder):
     trajs_layers = params["trajs_layers"]
     trajs_layers = [ trajs_layers[key] for key in trajs_layers.keys()]
     h = params["h"]
-    z0 = params["z0"]
+    z0 = params["z0"] + h/2
     Lx = params["Lx"]
     Ly = params["Ly"]
-    mirror = params["mirror"]
+    mirror = params["mirror"] if "mirror" in params.keys() else False
     interface_factor = params["interface_factor"]
     density = params["density"]
     names =["minus","plus"]
     with_interface = params["with_interface"]
+
+    factor_radius = params["factor_radius"]
 
     for k,isign in enumerate([-1,1]):
         if mirror and isign == -1:
@@ -45,13 +49,14 @@ def CreateYarns(params,output_folder):
                     for iradius,ifile in zip(radius_valu,file_radius):
                         
                         if is_semicylinder_mesh(itraj,Lx,Ly):
-                            semicylinder_mesh(itraj, iradius, ifile)
+                            semicylinder_mesh(itraj, iradius/factor_radius, ifile)
                         else:
                             CreateYarn({"trajs": itraj, 
                                         "radius": iradius, 
                                         "density": density,
                                         "Lx": Lx,
                                         "Ly": Ly,
+                                        "factor_radius": factor_radius,
                                         "file": ifile})
                         
                     cutgeo(file_radius[0],file_radius[1],file)
@@ -62,13 +67,15 @@ def CreateYarns(params,output_folder):
                 else:
                     
                     if is_semicylinder_mesh(itraj,Lx,Ly):
-                        semicylinder_mesh(itraj, radius, file)
+                        #semicylinder_mesh(itraj, radius/factor_radius, file)
+                        semiellipse_mesh(itraj, radius, file,factor_radius)
                     else:
                         CreateYarn({"trajs": itraj, 
                                     "radius": radius, 
                                     "density": density,
                                     "Lx": Lx,
                                     "Ly": Ly,
+                                    "factor_radius": factor_radius,
                                     "file": file})
                     
             print("Layer With Sign {} and number {}/{} done".format(isign,j+1,len(trajs_layers)))

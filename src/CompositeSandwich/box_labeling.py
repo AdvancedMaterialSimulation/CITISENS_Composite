@@ -65,14 +65,14 @@ def box_labeling(tag, label):
     ylims = [np.min(positions[:,1]), np.max(positions[:,1])]
     zlims = [np.min(positions[:,2]), np.max(positions[:,2])]
 
-    surfaces_x0 = [ i for i in surfaces if np.abs(i["pos"][0] - xlims[0]) < 1e-6 ]
-    surfaces_xL = [ i for i in surfaces if np.abs(i["pos"][0] - xlims[1]) < 1e-6 ]
+    surfaces_x0 = [ i for i in surfaces if np.abs(i["pos"][0] - xlims[0]) < 1e-4 ]
+    surfaces_xL = [ i for i in surfaces if np.abs(i["pos"][0] - xlims[1]) < 1e-4 ]
 
-    surfaces_y0 = [ i for i in surfaces if np.abs(i["pos"][1] - ylims[0]) < 1e-6 ]
-    surfaces_yL = [ i for i in surfaces if np.abs(i["pos"][1] - ylims[1]) < 1e-6 ]
+    surfaces_y0 = [ i for i in surfaces if np.abs(i["pos"][1] - ylims[0]) < 1e-4 ]
+    surfaces_yL = [ i for i in surfaces if np.abs(i["pos"][1] - ylims[1]) < 1e-4 ]
 
-    surfaces_z0 = [ i for i in surfaces if np.abs(i["pos"][2] - zlims[0]) < 1e-6 ]
-    surfaces_zL = [ i for i in surfaces if np.abs(i["pos"][2] - zlims[1]) < 1e-6 ]
+    surfaces_z0 = [ i for i in surfaces if np.abs(i["pos"][2] - zlims[0]) < 1e-4 ]
+    surfaces_zL = [ i for i in surfaces if np.abs(i["pos"][2] - zlims[1]) < 1e-4 ]
 
     directions = ['x', 'y', 'z']
     limits = [xlims, ylims, zlims]

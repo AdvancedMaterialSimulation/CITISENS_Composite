@@ -55,9 +55,18 @@ def SimulationBending(params):
     elset_nucleo = inp_f.select("NUCLEO","elset")
     inp_f.CreateSolidSection(elset_nucleo,mat_nucleo)
 
-    layer_sel = lambda i: inp_f.select_regex("LAYER_{}.*".format(i),"elset")
+
+    def layer_sel(i):
+        r =  inp_f.select_regex("LAYER_{}.*".format(i),"elset")
+        # 
+        cp = ["MINUS","PLUS"]
+        # must be contained in the name
+        r = [i for i in r if cp[0] in i.name or cp[1] in i.name ]
+        return r
+
     for i, iEs in enumerate(E_l):
-        for ielset in layer_sel(i+1):
+        layers = layer_sel(i+1)
+        for ielset in layers:
             inp_f.CreateSolidSection(ielset,materials[i])
 
     istep = inp_f.CreateStaticStep()
@@ -70,7 +79,8 @@ def SimulationBending(params):
     # create output if not exist
     if os.path.exists(output) == False:
         os.mkdir(output)
-    ifrd = inp_f.run(output)
+    opt = params["opt"]
+    ifrd = inp_f.run(output,opt=opt)
     
     
 

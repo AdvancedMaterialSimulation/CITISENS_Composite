@@ -20,7 +20,7 @@ def CreateLines(params):
     design_C = [trajs_Y,trajs_SX]
     design_D = [trajs_Y,trajs_SY]
     design_E = [trajs_Y,trajs_SY,trajs_SX]
-    design_F = [trajs_Y,trajs_X,trajs_SY,trajs_SX]
+    design_F = [trajs_Y,trajs_X,trajs_SY]
 
     design_B1 = [trajs_X]
     
@@ -38,6 +38,7 @@ def CreateLines(params):
                 "SY": [trajs_SY],
                 "SX_smooth": [trajs_SX_smooth],
                 "SY_smooth": [trajs_SY_smooth],
+                "Adouble" : [trajs_Y,trajs_Y],
                 }
     
     # list to dict

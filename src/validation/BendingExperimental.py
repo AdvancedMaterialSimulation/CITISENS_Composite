@@ -23,6 +23,12 @@ def BendingExperimental():
     df_stats['v [X,SX,Y,SY]'] = df_stats['layers'].apply(get_vector)
     df_stats["ni"] = df_stats["layers"].apply(len)
 
+    df_stats.rename(columns={"Modulo flexion (GPa)": "Eb [GPa]",
+                                "Espesor (mm)": "t [mm]",
+                                "Ancho flexion (mm)": "b [mm]"
+                                }, 
+                        inplace=True)
+
     return {
         "df": df,
         "df_stats": df_stats

@@ -16,6 +16,10 @@ def RunFullModel(design,root,params):
     lines = CreateLines(lines)
 
     params["longs"] = lines["longs"]
+
+    if not os.path.exists(root):
+        os.makedirs(root)
+        
     savejson(params,join(root,"params.json"))
 
     ouput_folder_designs = join(root,"designs")

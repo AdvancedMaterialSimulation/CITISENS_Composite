@@ -14,7 +14,10 @@ def CreateBoxMirror(params_yarns,output_folder):
     Lx = params_yarns["Lx"]
     Ly = params_yarns["Ly"]
     h = params_yarns["h"]
-    z0 = 2*(params_yarns["z0"] - 0.5*h)
+    # z0 = 2*(params_yarns["z0"] - 0.5*h)
+    
+    z0 = 2*(params_yarns["z0"])
+
     zL = h*(len(params_yarns["trajs_layers"]))*2 
     zT = z0 + zL
     radius = params_yarns["r"]
@@ -122,7 +125,7 @@ def CreateBoxMirror(params_yarns,output_folder):
         gmsh.model.occ.cut([(3, big_box)], [(3, mid_box)], removeTool=False)
 
     else:
-        big_box = gmsh.model.occ.addBox(0, 0, -h/2, 
+        big_box = gmsh.model.occ.addBox(0, 0, 0, 
                         Lx, Ly,h)
         
     gmsh.model.occ.synchronize()
@@ -206,7 +209,7 @@ def CreateBoxMirror(params_yarns,output_folder):
 
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature",25) # 20
     # gmsh.option.setNumber("Mesh.MeshSizeFromCurvatureIsotropic",1) # True
-    gmsh.option.setNumber("Mesh.Algorithm", 1)
+    gmsh.option.setNumber("Mesh.Algorithm", 2)
     # gmsh.option.setNumber("Mesh.Algorithm3D", 2)
 
     # gmsh.option.setNumber("Mesh.SubdivisionAlgorithm", 1)

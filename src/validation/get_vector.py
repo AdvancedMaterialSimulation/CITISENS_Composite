@@ -15,13 +15,12 @@ def get_vector(list_of_layers):
     
     vector = [0, 0, 0, 0]  # Inicializa el vector con ceros
     
-    if "X" in list_of_layers:
-        vector[0] = 1
-    if "SX" in list_of_layers:
-        vector[1] = 1
-    if "Y" in list_of_layers:
-        vector[2] = 1
-    if "SY" in list_of_layers:
-        vector[3] = 1
+
+    # es mejor contar cuántas veces aparece cada capa en la lista y asignar el valor correspondiente
+    vector[0] = list_of_layers.count("X")
+    vector[1] = list_of_layers.count("SX")
+    vector[2] = list_of_layers.count("Y")
+    vector[3] = list_of_layers.count("SY")
+
 
     return vector

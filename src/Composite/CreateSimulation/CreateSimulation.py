@@ -68,6 +68,15 @@ def CreateSimulation(design_folder,
     nucleo_data = nucleo()
 
     Ecarbon_MPa = carbon_data["carbon"].iloc[0]["Young Modulus (GPa)"]*1e3
+    
+    
+    Ecarbon_MPa = Ecarbon_MPa/21 #22
+    # Ecarbon_MPa = Ecarbon_MPa/2.5
+    Ecarbon_MPa = Ecarbon_MPa
+
+
+    resina_data["young modulus [MPa]"] = resina_data["young modulus [MPa]"]/6
+
     poisson_carbon = carbon_data["poisson ratio"]
 
     materials = {
@@ -116,7 +125,8 @@ def CreateSimulation(design_folder,
     istep.CreateBoundary(YL_PLANE_NSET,dim=2,displ=displ_y)
    
     if "ALMA_Z0_PLANE_NSET" in locals():
-        istep.CreateBoundary(ALMA_Z0_PLANE_NSET,dim=3,displ=0.0)
+        pass
+        #istep.CreateBoundary(ALMA_Z0_PLANE_NSET,dim=3,displ=0.0)
 
     if params["x_fixed"]:
         istep.CreateBoundary(X0_PLANE_NSET,dim=1,displ=0.0)

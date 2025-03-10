@@ -4,37 +4,76 @@ from .CreateComposite.CreateComposite import CreateComposite
 
 
 fc_mesh_max_d = {
-    "A": 1.5,
-    "B": 2.0,
+    "A": 1.0,
+    "Adouble": 1.0,
+    "B": 1.0,
     "B1":2.0,
-    "C": 2.0,
-    "D": 2.5,
-    "E": 2.25, # 2.5
-    "F": 2.0,
-    "SX": 2.0,
-    "SY": 1.8,
+    "C": 1.0,
+    "D": 1.0,
+    "E": 1.0, # 2.5
+    "F": 1.0,
+    "SX": 1.0,
+    "SY": 1.0,
     "SX_smooth": 2.0,
     "SY_smooth": 2.0,
-    "X": 2.0,
-    "Y": 2.0,
+    "X": 1.0,
+    "Y": 1.0,
 }
 fm_max_default = 2.5
 fc_mesh_min_d = {
-    "A": 0.5,
-    "B": 0.5,
+    "A": 0.2,
+    "Adouble": 0.25,
+    "B": 0.2,
     "B1":0.5,
-    "C": 0.5,
-    "D": 0.6,
-    "E": 0.5, # 0.45
-    "F": 0.5,
-    "SX": 0.5,
-    "SY": 0.5,
+    "C": 0.25,
+    "D": 0.25,
+    "E": 0.25, # 0.45
+    "F": 0.25,
+    "SX": 0.2,
+    "SY": 0.2,
     "SX_smooth": 0.5,
     "SY_smooth": 0.5,
-    "X": 0.5,
-    "Y": 0.5,
+    "X": 0.2,
+    "Y": 0.2,
 }
 fm_min_default = 0.5
+
+
+# ==============================================================================
+
+# fc_mesh_max_d = {
+#     "A": 2.0,
+#     "Adouble": 1.5,
+#     "B": 1.0,
+#     "B1":2.0,
+#     "C": 1.0,
+#     "D": 1.0,
+#     "E": 1.0, # 2.5
+#     "F": 1.0,
+#     "SX": 1.0,
+#     "SY": 1.0,
+#     "SX_smooth": 2.0,
+#     "SY_smooth": 2.0,
+#     "X": 1.0,
+#     "Y": 1.0,
+# }
+# fm_max_default = 2.5
+# fc_mesh_min_d = {
+#     "A": 0.2,
+#     "Adouble": 0.35,
+#     "B": 0.2,
+#     "B1":0.5,
+#     "C": 0.25,
+#     "D": 0.25,
+#     "E": 0.25, # 0.45
+#     "F": 0.25,
+#     "SX": 0.2,
+#     "SY": 0.2,
+#     "SX_smooth": 0.5,
+#     "SY_smooth": 0.5,
+#     "X": 0.2,
+#     "Y": 0.2,
+# }
 
 def GenerateMeshRVE(lines,select_design,output_folder,params_composite):
 
@@ -46,10 +85,6 @@ def GenerateMeshRVE(lines,select_design,output_folder,params_composite):
 
     params_composite["trajs_layers"] = lines["designs"][select_design]
     
-    
-    #params_composite["fc_mesh_min"] = fc_mesh_min_d[select_design]
-    #params_composite["fc_mesh_max"] = fc_mesh_max_d[select_design]
-
     params_composite["fc_mesh_min"] = fc_mesh_min_d[select_design]
     params_composite["fc_mesh_max"] = fc_mesh_max_d[select_design]
 

@@ -1,7 +1,7 @@
 import gmsh 
 import numpy as np
 import os 
-
+from CompositeSandwich.box_labeling import box_labeling
 join = os.path.join
 
 def CreateGeoBending(params):
@@ -87,6 +87,15 @@ def CreateGeoBending(params):
     # add physical group
 
     gmsh.model.occ.synchronize()
+
+    # 
+    volumens = gmsh.model.getEntities(3)
+    # sort volumens by z
+    center_z = np.array([gmsh.model.occ.getCenterOfMass(3, vol[1])[2] for vol in volumens])
+    idx = np.argsort(center_z)
+    volumens = np.array(volumens)[idx]
+    for i,vol in enumerate(volumens):
+        box_labeling(vol[1],str("Layer_{}".format(i)))
 
     # set size 0.1 of Characteristic Length min
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", 0.01)
