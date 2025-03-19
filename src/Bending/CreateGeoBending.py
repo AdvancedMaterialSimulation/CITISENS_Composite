@@ -13,6 +13,7 @@ def CreateGeoBending(params):
     Ly = params["Ly"]
     n_l = params["n_l"]
     output = params["output_folder"]
+    meshsizefactor = params["meshsizefactor"]
 
     t_t = 2*t_l*n_l + t_n
     params["t_t"] = t_t
@@ -99,11 +100,21 @@ def CreateGeoBending(params):
 
     # set size 0.1 of Characteristic Length min
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", 0.01)
-    gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 3*t_l)
+    gmsh.option.setNumber("Mesh.CharacteristicLengthMax", 6*t_l*meshsizefactor)
+
+    #
+    field = gmsh.model.mesh.field
+    field.add("MathEval", 1)
+    field.setString(1, "F", "0.5 + 1.1 * Abs(x)")  # Más refinado cerca de x=0
+    
+    field.setString(1, "F", "0.5 + 1.7 * Abs(x)")  # Más refinado cerca de x=0
+    #field.setString(1, "F", "0.5 + 1.1 * Abs(x) + 1.1 * (Abs(z) > 1.5 ? 1 : 0)")
+
+    # Aplicar el campo de fondo
+    field.setAsBackgroundMesh(1)
     # mesh 
     # near to the symmetry plane, the mesh is finer
 
-    gmsh.model.mesh.field.setAsBackgroundMesh(1)
 
     # set the point of the symmetry plane
 

@@ -27,7 +27,7 @@ def TensileExperimental():
     df_stats.rename(columns={"Modulo (GPa)": "Et [GPa]",
                              "Espesor (mm)": "t [mm]",
                             r"% epsilon": r"% e",
-                            "Tension maxima Traccion (MPa)": "Smax [MPa]" 
+                            "Tension maxima Traccion (MPa)": "St [MPa]" 
                              }, 
                     inplace=True)
     return {

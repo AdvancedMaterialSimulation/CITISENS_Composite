@@ -92,4 +92,42 @@ def Rotura(layers,E_eff,El,sigmal):
 
     Sl_s = np.array([ Sl_dict[ily] for ily in layers] )
 
-    return E_eff*np.min(Sl_s/El_s)
+    return np.min(E_eff*Sl_s/El_s)
+
+El_dict = { "X" :None, 
+            "SX":None, 
+            "Y" :None, 
+            "SY":None}
+
+Sl_dict = { "X" :None,
+            "SX":None,
+            "Y" :None,
+            "SY":None}
+# =============================================================================
+def RoturaBending(layers,E_eff,El,sigmal,tn,tl):
+
+    El_dict["X"]  = El[0]
+    El_dict["SX"] = El[1]
+    El_dict["Y"]  = El[2]
+    El_dict["SY"] = El[3]
+
+    Ei_s = np.array([ El_dict[ily] for ily in layers] )
+
+
+    Sl_dict["X"]  = sigmal[0]
+    Sl_dict["SX"] = sigmal[1]
+    Sl_dict["Y"]  = sigmal[2]
+    Sl_dict["SY"] = sigmal[3]
+
+
+    ni = len(Ei_s)
+    tt = Tau_model(tn, tl, ni)
+    rng = np.arange(1,ni+1)    # [1,2,3,...,ni]
+    #rng = rng - 0.5            # [0.5, 1.5 , 2.5,...,ni-0.5]
+    Yg = tn/2 +  tl*rng        # [Yg1, Yg2, Yg3,...,Ygni] 
+
+    Sl_s = np.array([ Sl_dict[ily] for ily in layers] )
+    Y_max = tt/2
+
+    return np.min(Sl_s*(E_eff/Ei_s)*(Y_max/Yg))
+

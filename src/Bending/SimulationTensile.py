@@ -86,7 +86,7 @@ def SimulationTensile(params):
     # 
 
     materials = []
-    nu = 0.4
+    nu = 0.3
     for i,iEs in enumerate(E_l):
         name_mat = "mat_{}".format(i+1)
         name_mat = params["name_mat"][i] + "_{}".format(i+1)

@@ -51,7 +51,7 @@ def CreateYarns(params,output_folder):
                         if is_semicylinder_mesh(itraj,Lx,Ly):
                             semicylinder_mesh(itraj, iradius/factor_radius, ifile)
                         else:
-                            CreateYarn({"trajs": itraj, 
+                            CreateYarnRect({"trajs": itraj, 
                                         "radius": iradius, 
                                         "density": density,
                                         "Lx": Lx,
@@ -70,7 +70,7 @@ def CreateYarns(params,output_folder):
                         #semicylinder_mesh(itraj, radius/factor_radius, file)
                         semiellipse_mesh(itraj, radius, file,factor_radius)
                     else:
-                        CreateYarn({"trajs": itraj, 
+                        CreateYarnRect({"trajs": itraj, 
                                     "radius": radius, 
                                     "density": density,
                                     "Lx": Lx,

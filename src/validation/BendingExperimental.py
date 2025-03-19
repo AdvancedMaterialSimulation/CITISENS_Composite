@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def BendingExperimental():
 
     df = full_experiment()
-    df = df[["Name","Modulo flexion (GPa)","Espesor (mm)","Ancho flexion (mm)"]]
+    df = df[["Name","Modulo flexion (GPa)","Espesor (mm)","Ancho flexion (mm)","Tension maxima Flexion (MPa)"]]
 
     df_stats = df.groupby('Name').agg(['mean', 'std'])
 
@@ -24,8 +24,9 @@ def BendingExperimental():
     df_stats["ni"] = df_stats["layers"].apply(len)
 
     df_stats.rename(columns={"Modulo flexion (GPa)": "Eb [GPa]",
-                                "Espesor (mm)": "t [mm]",
-                                "Ancho flexion (mm)": "b [mm]"
+                             "Espesor (mm)"        : "t [mm]"  ,
+                             "Ancho flexion (mm)"  : "b [mm]"  ,
+                             "Tension maxima Flexion (MPa)": "Sb [MPa]",
                                 }, 
                         inplace=True)
 

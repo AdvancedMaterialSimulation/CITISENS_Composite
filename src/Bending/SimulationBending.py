@@ -1,6 +1,8 @@
 from djccx.inp.inp import inp
 from Composite.inp.CreateNsetFromElset import CreateNsetFromElset
 import os
+import numpy as np
+
 join = os.path.join
 def SimulationBending(params):
 
@@ -44,17 +46,13 @@ def SimulationBending(params):
     elset_all = inp_f.CreateElsetAll()
     # 
 
+    if "aniso" in params.keys():
+        aniso = params["aniso"]
+    else:
+        aniso = False
+
     materials = []
     nu = 0.4
-    for i,iEs in enumerate(E_l):
-        name_mat = "mat_{}".format(i+1)
-        name_mat = params["name_mat"][i] + "_{}".format(i+1)
-        materials.append(inp_f.CreateElasticMaterial(name_mat, iEs, nu))
-
-    mat_nucleo   = inp_f.CreateElasticMaterial("mat_nucleo", E_n, nu)
-    elset_nucleo = inp_f.select("NUCLEO","elset")
-    inp_f.CreateSolidSection(elset_nucleo,mat_nucleo)
-
 
     def layer_sel(i):
         r =  inp_f.select_regex("LAYER_{}.*".format(i),"elset")
@@ -63,18 +61,49 @@ def SimulationBending(params):
         # must be contained in the name
         r = [i for i in r if cp[0] in i.name or cp[1] in i.name ]
         return r
-
-    for i, iEs in enumerate(E_l):
+    
+    for i,iEs in enumerate(E_l):
+        name_mat = "mat_{}".format(i+1)
+        name_mat = params["name_mat"][i] + "_{}".format(i+1)
         layers = layer_sel(i+1)
-        for ielset in layers:
-            inp_f.CreateSolidSection(ielset,materials[i])
 
-    istep = inp_f.CreateStaticStep()
+        if not aniso:
+            orientation = None
+            material = inp_f.CreateElasticMaterial(name_mat, iEs, nu)
+        else:
+            orientation = inp_f.CreateOrientation("OR1",[1,0,0],[0,1,0])
+            
+            E1 = iEs
+            E2 = iEs
+            E3 = iEs
+            nu12 = 0.3
+            nu13 = 0.3
+            nu23 = 0.3
+            G12 = E1/(2*(1+nu12))
+            G13 = E1/(2*(1+nu13))
+            G23 = E1/(2*(1+nu23))
+
+            material = inp_f.CreateElasticEngineeringMaterial(name_mat, 
+                                                              E1, E2, E3, 
+                                                              nu12, nu13, nu23, 
+                                                              G12, G13, G23)
+
+
+        for ielset in layers:
+            inp_f.CreateSolidSection(ielset,material,orientation=orientation)
+
+    mat_nucleo   = inp_f.CreateElasticMaterial("mat_nucleo", E_n, nu)
+    elset_nucleo = inp_f.select("NUCLEO","elset")
+    inp_f.CreateSolidSection(elset_nucleo,mat_nucleo)
     # 
 
-    istep.CreateBoundary(nset_symmetry,1,0.0)
-    istep.CreateBoundary(nset_fixed,3,0.0)
-    istep.CreateBoundary(nset_load,3,-disp)
+    disp_span = np.linspace(0,disp,3)
+    for disp in disp_span:
+        istep = inp_f.CreateStaticStep()
+
+        istep.CreateBoundary(nset_symmetry,1 ,  0.0  )
+        istep.CreateBoundary(nset_fixed   ,3 ,  0.0  )
+        istep.CreateBoundary(nset_load    ,3 , -disp )
 
     # create output if not exist
     if os.path.exists(output) == False:
