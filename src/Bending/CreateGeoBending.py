@@ -105,9 +105,9 @@ def CreateGeoBending(params):
     #
     field = gmsh.model.mesh.field
     field.add("MathEval", 1)
-    field.setString(1, "F", "0.5 + 1.1 * Abs(x)")  # Más refinado cerca de x=0
-    
     field.setString(1, "F", "0.5 + 1.7 * Abs(x)")  # Más refinado cerca de x=0
+    
+    #field.setString(1, "F", "0.5 + 1.7 * Abs(x)")  # Más refinado cerca de x=0
     #field.setString(1, "F", "0.5 + 1.1 * Abs(x) + 1.1 * (Abs(z) > 1.5 ? 1 : 0)")
 
     # Aplicar el campo de fondo

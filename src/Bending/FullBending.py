@@ -52,9 +52,7 @@ def FullBending(params):
     params["Eflex"] = (P*L**3)/(4*U*B*t**3) * 1e-3
 
     # 
-    nu = 0.3
 
-    # params["Eflex"] = params["Eflex"]*(1 - nu**2)
 
 
     params["rpostbending"] = PostProcessingBending({
@@ -92,6 +90,9 @@ def FullBending(params):
     En = params["sim"]["E_n"]
 
     params["Eflexion_analytical"] = E_flexion(1e-3*En,params["El"],tn,tl,layers)
+    nu = 0.3
+    params["Eflexion_analytical"] = params["Eflexion_analytical"] * (1 - nu**2)
+
     params["Etensile_analytical"] = E_Tensile(1e-3*En,params["El"],tn,tl,layers)
 
     E_eff = params["Etensile_analytical"]

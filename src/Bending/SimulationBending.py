@@ -6,7 +6,6 @@ import numpy as np
 join = os.path.join
 def SimulationBending(params):
 
-    # inp_f = inp("../geo/composite_layers.inp")
     inp_f = inp(join(params["output_folder"],
                         "..",
                         "geo",
@@ -52,7 +51,7 @@ def SimulationBending(params):
         aniso = False
 
     materials = []
-    nu = 0.4
+    nu = 0.3
 
     def layer_sel(i):
         r =  inp_f.select_regex("LAYER_{}.*".format(i),"elset")
