@@ -5,8 +5,8 @@ from .semicylinder_mesh import semicylinder_mesh
 from .semiellipse_mesh import semiellipse_mesh
 from .cutgeo import cutgeo
 
-from functions.CreateYarnInterface import CreateYarn
-from functions.CreateYarnInterfaceRect import CreateYarnRect
+from functions.CreateYarnInterface import CreateYarn as CreateYarnRect
+# from functions.CreateYarnInterfaceRect import CreateYarnRect
 import os
 import numpy as np
 

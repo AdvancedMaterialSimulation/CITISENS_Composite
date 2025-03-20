@@ -2,7 +2,7 @@ from Bending.CreateGeoBending import CreateGeoBending
 from Bending.SimulationBending import SimulationBending
 from Bending.SimulationTensile import SimulationTensile
 from AnalyticalLayers.models import E_flexion, E_Tensile,Rotura,RoturaBending
-from  .PostProcessingTensile import PostProcessingTensile
+from .PostProcessingTensile import PostProcessingTensile
 from .PostProcessingBending import PostProcessingBending
 import numpy as np
 import os 

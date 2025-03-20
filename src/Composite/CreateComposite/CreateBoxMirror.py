@@ -1,7 +1,6 @@
 import gmsh
 import glob
 import os
-import numpy as np
 from CompositeSandwich.box_labeling import box_labeling
 from .SetNames import SetNames
 from ..inp.are_coplanar import are_coplanar
@@ -207,9 +206,9 @@ def CreateBoxMirror(params_yarns,output_folder):
     gmsh.option.setNumber("Mesh.CharacteristicLengthMin", radius*fc_mesh_min)
     gmsh.option.setNumber("Mesh.CharacteristicLengthMax", radius*fc_mesh_max)
 
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature",25) # 20
+    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature",40) # 20
     # gmsh.option.setNumber("Mesh.MeshSizeFromCurvatureIsotropic",1) # True
-    gmsh.option.setNumber("Mesh.Algorithm", 2)
+    gmsh.option.setNumber("Mesh.Algorithm", 6)
     # gmsh.option.setNumber("Mesh.Algorithm3D", 2)
 
     # gmsh.option.setNumber("Mesh.SubdivisionAlgorithm", 1)

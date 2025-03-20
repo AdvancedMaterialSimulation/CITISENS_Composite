@@ -37,14 +37,14 @@ def PostProcessingBending(params):
         for idx in range(len(LAYERS)):
             nodes = LAYERS[idx].GetUniqueNodes(inp_f.nodes)
 
-            zmin = nodes["z"].min()
+            # zmin = nodes["z"].min()
             zuniques = nodes["z"].unique()
             zuniques = np.sort(zuniques)
             # print(zuniques)
             zmin = zuniques[0]
 
             x0 = 0
-            y0 = 0.5*params["geo"]["Ly"]/2
+            y0 = params["geo"]["Ly"]/2
             z0 = zmin
 
             distancias = np.sqrt(   (nodes["x"] - x0)**2 + \
