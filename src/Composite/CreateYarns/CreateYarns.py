@@ -6,6 +6,7 @@ from .semiellipse_mesh import semiellipse_mesh
 from .cutgeo import cutgeo
 
 from functions.CreateYarnInterface import CreateYarn as CreateYarnRect
+from functions.CreateYarnElipse import CreateYarnElipse
 # from functions.CreateYarnInterfaceRect import CreateYarnRect
 import os
 import numpy as np
@@ -51,7 +52,7 @@ def CreateYarns(params,output_folder):
                         if is_semicylinder_mesh(itraj,Lx,Ly):
                             semicylinder_mesh(itraj, iradius/factor_radius, ifile)
                         else:
-                            CreateYarnRect({"trajs": itraj, 
+                            CreateYarnElipse({"trajs": itraj, 
                                         "radius": iradius, 
                                         "density": density,
                                         "Lx": Lx,
@@ -70,7 +71,7 @@ def CreateYarns(params,output_folder):
                         #semicylinder_mesh(itraj, radius/factor_radius, file)
                         semiellipse_mesh(itraj, radius, file,factor_radius)
                     else:
-                        CreateYarnRect({"trajs": itraj, 
+                        CreateYarnElipse({"trajs": itraj, 
                                     "radius": radius, 
                                     "density": density,
                                     "Lx": Lx,

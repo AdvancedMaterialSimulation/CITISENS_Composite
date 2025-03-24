@@ -1,0 +1,1 @@
+Un modelo de capas [Y,Y,N,Y,Y] con un tl concreto y un modelo con capas [Y,T,Y] con el doble tl, Los resultados coinciden. 

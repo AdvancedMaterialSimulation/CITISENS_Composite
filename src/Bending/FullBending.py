@@ -91,21 +91,22 @@ def FullBending(params):
 
     params["Eflexion_analytical"] = E_flexion(1e-3*En,params["El"],tn,tl,layers)
     nu = 0.3
-    params["Eflexion_analytical"] = params["Eflexion_analytical"] * (1 - nu**2)
+    # params["Eflexion_analytical"] = params["Eflexion_analytical"] * (1 - nu**2)
 
     params["Etensile_analytical"] = E_Tensile(1e-3*En,params["El"],tn,tl,layers)
 
-    E_eff = params["Etensile_analytical"]
+    Et_eff = params["Etensile_analytical"]
+    Ef_eff = params["Eflexion_analytical"]
     sigmal = [ params["tensile"]["St_layers"][il] 
               for il in ["X","SX","Y","SY"]]
     
     params["St_analytical"] = Rotura(layers,
-                                     1e-3*E_eff,
+                                     1e-3*Et_eff,
                                      params["El"],
                                      sigmal)
 
     params["Sb_analytical"] = RoturaBending(layers,
-                                            1e-3*E_eff,
+                                            1e-3*Ef_eff,
                                             params["El"],
                                             sigmal,
                                             tn,

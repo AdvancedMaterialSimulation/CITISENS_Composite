@@ -26,7 +26,7 @@ def PostProcessingBending(params):
     rr = []
     L = 2*params["geo"]["Lx"]
 
-    for data in ifrd["data_blocks"]:
+    for it,data in enumerate(ifrd["data_blocks"]):
         
         # ========================
         # Principal Stress
@@ -37,24 +37,44 @@ def PostProcessingBending(params):
         for idx in range(len(LAYERS)):
             nodes = LAYERS[idx].GetUniqueNodes(inp_f.nodes)
 
-            # zmin = nodes["z"].min()
-            zuniques = nodes["z"].unique()
-            zuniques = np.sort(zuniques)
-            # print(zuniques)
-            zmin = zuniques[0]
+            zmin_to_eval = nodes["z"].min()
 
             x0 = 0
-            y0 = params["geo"]["Ly"]/2
-            z0 = zmin
+            y0 = B/2
+            eps = 0.1
 
-            distancias = np.sqrt(   (nodes["x"] - x0)**2 + \
-                                    (nodes["y"] - y0)**2 + \
-                                    (nodes["z"] - z0)**2 )
+            nodes = nodes[nodes["x"] > x0 - eps]
+            nodes = nodes[nodes["x"] < x0 + eps]
+            nodes = nodes[nodes["y"] > y0 - eps]
+            nodes = nodes[nodes["y"] < y0 + eps]
             
-            arg = np.argmin(distancias)
-            P1max = data.iloc[nodes.index[arg]]["P1"]
+            zmax = nodes["z"].max()
+            zmin = nodes["z"].min()
+            zlen = zmax - zmin
+            factor = 0.1
+            zmin_new = zmin + factor*zlen
+            zmax_new = zmax - factor*zlen
 
-            P1s.append(P1max)
+            nodes = nodes[nodes["z"] > zmin_new]
+            nodes = nodes[nodes["z"] < zmax_new]
+            # linear regression
+            
+            P1 = data.loc[nodes.index]["P1"]
+            nodes["P1"] = P1
+
+            # linear regression z vs P1
+            z_reg  = nodes["z"]
+            P1_reg = nodes["P1"]
+
+            A = np.vstack([z_reg, np.ones(len(z_reg))]).T
+            m, c = np.linalg.lstsq(A, P1_reg, rcond=None)[0]
+            
+            P1_reg = m*zmin_to_eval + c
+
+            if it != 0:
+                P1s.append(P1_reg)
+            else:
+                P1s.append(0)
 
         P1s = np.array(P1s)
         

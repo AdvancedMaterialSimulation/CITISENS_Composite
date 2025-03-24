@@ -1,0 +1,358 @@
+ *ERROR in openfile: could not delete file main.dat
+ *ERROR in openfile: could not delete file main.dat
+ *ERROR in openfile: could not delete file main.dat
+
+************************************************************
+
+CalculiX Version 2.21, Copyright(C) 1998-2023 Guido Dhondt
+CalculiX comes with ABSOLUTELY NO WARRANTY. This is free
+software, and you are welcome to redistribute it under
+certain conditions, see gpl.htm
+
+************************************************************
+
+You are using an executable made on Sat Jul 29 17:24:57     2023
+
+  The numbers below are estimated upper bounds
+
+  number of:
+
+   nodes:         5671
+   elements:         5078
+   one-dimensional elements:            0
+   two-dimensional elements:            0
+   integration points per element:            4
+   degrees of freedom per node:            3
+   layers per element:            1
+
+   distributed facial loads:            0
+   distributed volumetric loads:            0
+   concentrated loads:            0
+   single point constraints:         2769
+   multiple point constraints:            1
+   terms in all multiple point constraints:            1
+   tie constraints:            0
+   dependent nodes tied by cyclic constraints:            0
+   dependent nodes in pre-tension constraints:            0
+
+   sets:           29
+   terms in all sets:        17059
+
+   materials:            2
+   constants per material and temperature:            2
+   temperature points per material:            1
+   plastic data points per material:            0
+
+   orientations:            0
+   amplitudes:            9
+   data points in all amplitudes:            9
+   print requests:            3
+   transformations:            0
+   property cards:            0
+
+
+ STEP            1
+
+ Static analysis was selected
+
+ Decascading the MPC's
+
+ Determining the structure of the matrix:
+ Using up to 4 cpu(s) for setting up the structure of the matrix.
+ number of equations
+ 16090
+ number of nonzero lower triangular matrix elements
+ 580343
+
+ Using up to 4 cpu(s) for the stress calculation.
+
+ Using up to 4 cpu(s) for the symmetric stiffness/mass contributions.
+
+Not reusing csc.
+||b|| getting too small with scaling, boost it statically
++-------------------------------------------------+
++     PaStiX : Parallel Sparse matriX package     +
++-------------------------------------------------+
+  Version:                                   6.0.1
+  Schedulers:
+    sequential:                            Enabled
+    thread static:                         Started
+    thread dynamic:                       Disabled
+    PaRSEC:                               Disabled
+    StarPU:                               Disabled
+  Number of MPI processes:                       1
+  Number of threads per process:                 4
+  Number of GPUs:                                0
+  MPI communication support:              Disabled
+  Distribution level:                     2D( 128)
+  Blocking size (min/max):             1024 / 2048
+
+  Matrix type:  General
+  Arithmetic:   Float
+  Format:       CSC
+  N:            16090
+  nnz:          1176776
+
++-------------------------------------------------+
+  Ordering step :
+    Ordering method is: Scotch
+    Time to compute ordering:              0.0525 
++-------------------------------------------------+
+  Symbolic factorization step:
+    Symbol factorization using: Fax Direct
+    Number of nonzeroes in L structure:    5211738
+    Fill-in of L:                         4.428828
+    Time to compute symbol matrix:        0.0037 
++-------------------------------------------------+
+  Reordering step:
+    Split level:                                 0
+    Stoping criteria:                           -1
+    Time for reordering:                  0.0061 
++-------------------------------------------------+
+  Analyse step:
+    Number of non-zeroes in blocked L:    10423476
+    Fill-in:                              8.857655
+    Number of operations in full-rank LU   :     4.30 GFlops
+    Prediction:
+      Model:                             AMD 6180  MKL
+      Time to factorize:                  0.3859 
+    Time for analyze:                     0.0004 
++-------------------------------------------------+
+  Factorization step:
+    Factorization used: LU
+    Time to initialize internal csc:      0.0145 
+    Time to initialize coeftab:           0.0039 
+    Time to factorize:                    0.0730  (58.90 GFlop/s)
+    Number of operations:                       4.30 GFlops
+    Number of static pivots:                     0
+    Time to solve:                        0.0021 
+
+Solution contains NaN!
+
+turning diagonal scaling off
+Not reusing csc.
++-------------------------------------------------+
++     PaStiX : Parallel Sparse matriX package     +
++-------------------------------------------------+
+  Version:                                   6.0.1
+  Schedulers:
+    sequential:                            Enabled
+    thread static:                         Started
+    thread dynamic:                       Disabled
+    PaRSEC:                               Disabled
+    StarPU:                               Disabled
+  Number of MPI processes:                       1
+  Number of threads per process:                 4
+  Number of GPUs:                                0
+  MPI communication support:              Disabled
+  Distribution level:                     2D( 128)
+  Blocking size (min/max):             1024 / 2048
+
+  Matrix type:  General
+  Arithmetic:   Float
+  Format:       CSC
+  N:            16090
+  nnz:          1176776
+
++-------------------------------------------------+
+  Ordering step :
+    Ordering method is: Scotch
+    Time to compute ordering:              0.0515 
++-------------------------------------------------+
+  Symbolic factorization step:
+    Symbol factorization using: Fax Direct
+    Number of nonzeroes in L structure:    5165524
+    Fill-in of L:                         4.389556
+    Time to compute symbol matrix:        0.0035 
++-------------------------------------------------+
+  Reordering step:
+    Split level:                                 0
+    Stoping criteria:                           -1
+    Time for reordering:                  0.0078 
++-------------------------------------------------+
+  Analyse step:
+    Number of non-zeroes in blocked L:    10331048
+    Fill-in:                              8.779112
+    Number of operations in full-rank LU   :     4.25 GFlops
+    Prediction:
+      Model:                             AMD 6180  MKL
+      Time to factorize:                  0.3678 
+    Time for analyze:                     0.0004 
++-------------------------------------------------+
+  Factorization step:
+    Factorization used: LU
+    Time to initialize internal csc:      0.0154 
+    Time to initialize coeftab:           0.0043 
+    Time to factorize:                    0.0668  (63.58 GFlop/s)
+    Number of operations:                       4.25 GFlops
+    Number of static pivots:                     0
+RHS only consists of 0.0
+________________________________________
+
+CSC Conversion Time: 0.002667
+Init Time: 0.068882
+Factorize Time: 0.086603
+Solve Time: 0.000009
+Clean up Time: 0.000000
+---------------------------------
+Sum: 0.158161
+
+Total PaStiX Time: 0.158161
+CCX without PaStiX Time: 0.299062
+Share of PaStiX Time: 0.345917
+Total Time: 0.457223
+Reusability: 0 : 1 
+________________________________________
+
+________________________________________
+
+CSC Conversion Time: 0.003041
+Init Time: 0.069544
+Factorize Time: 0.091480
+Solve Time: 0.160548
+Clean up Time: 0.000000
+---------------------------------
+Sum: 0.324613
+
+Total PaStiX Time: 0.482774
+CCX without PaStiX Time: -0.025522
+Share of PaStiX Time: 1.055816
+Total Time: 0.457252
+Reusability: 0 : 2 
+________________________________________
+
+ Using up to 4 cpu(s) for the stress calculation.
+
+
+ STEP            2
+
+ Static analysis was selected
+
+ Determining the structure of the matrix:
+ Using up to 4 cpu(s) for setting up the structure of the matrix.
+ number of equations
+ 16090
+ number of nonzero lower triangular matrix elements
+ 580343
+
+ Using up to 4 cpu(s) for the stress calculation.
+
+ Using up to 4 cpu(s) for the symmetric stiffness/mass contributions.
+
+Reusing csc.!
+
+  Matrix type:  General
+  Arithmetic:   Float
+  Format:       CSC
+  N:            16090
+  nnz:          1176776
+
++-------------------------------------------------+
+  Factorization step:
+    Factorization used: LU
+    Time to initialize internal csc:      0.0035 
+    Time to initialize coeftab:           0.0017 
+    Time to factorize:                    0.0835  (50.90 GFlop/s)
+    Number of operations:                       4.25 GFlops
+    Number of static pivots:                     0
+    Time to solve:                        0.0022 
+    - iteration 1 :
+         total iteration time                   0.00223 
+         error                                  2.7025e-09
+    - iteration 2 :
+         total iteration time                   0.00211 
+         error                                  1.4872e-12
+    - iteration 3 :
+         total iteration time                   0.00234 
+         error                                  8.0139e-16
+    Time for refinement:                  0.0076 
+    Time for refinement:                  0.0006 
+________________________________________
+
+CSC Conversion Time: 0.002445
+Init Time: 0.000013
+Factorize Time: 0.088719
+Solve Time: 0.010539
+Clean up Time: 0.000000
+---------------------------------
+Sum: 0.101715
+
+Total PaStiX Time: 0.584489
+CCX without PaStiX Time: 0.071147
+Share of PaStiX Time: 0.891484
+Total Time: 0.655636
+Reusability: 1 : 3 
+________________________________________
+
+ Using up to 4 cpu(s) for the stress calculation.
+
+
+ STEP            3
+
+ Static analysis was selected
+
+ Determining the structure of the matrix:
+ Using up to 4 cpu(s) for setting up the structure of the matrix.
+ number of equations
+ 16090
+ number of nonzero lower triangular matrix elements
+ 580343
+
+ Using up to 4 cpu(s) for the stress calculation.
+
+ Using up to 4 cpu(s) for the symmetric stiffness/mass contributions.
+
+Reusing csc.!
+
+  Matrix type:  General
+  Arithmetic:   Float
+  Format:       CSC
+  N:            16090
+  nnz:          1176776
+
++-------------------------------------------------+
+  Factorization step:
+    Factorization used: LU
+    Time to initialize internal csc:      0.0027 
+    Time to initialize coeftab:           0.0019 
+    Time to factorize:                    0.0742  (57.23 GFlop/s)
+    Number of operations:                       4.25 GFlops
+    Number of static pivots:                     0
+    Time to solve:                        0.0018 
+    - iteration 1 :
+         total iteration time                   0.00237 
+         error                                  2.7215e-09
+    - iteration 2 :
+         total iteration time                   0.00229 
+         error                                  1.733e-12
+    - iteration 3 :
+         total iteration time                   0.00265 
+         error                                  9.2721e-16
+    Time for refinement:                  0.0084 
+    Time for refinement:                  0.0007 
+________________________________________
+
+CSC Conversion Time: 0.002329
+Init Time: 0.000014
+Factorize Time: 0.078977
+Solve Time: 0.011225
+Clean up Time: 0.000000
+---------------------------------
+Sum: 0.092545
+
+Total PaStiX Time: 0.677034
+CCX without PaStiX Time: 0.174653
+Share of PaStiX Time: 0.794933
+Total Time: 0.851687
+Reusability: 2 : 4 
+________________________________________
+
+ Using up to 4 cpu(s) for the stress calculation.
+
+
+ Job finished
+
+________________________________________
+
+Total CalculiX Time: 0.911572
+________________________________________
