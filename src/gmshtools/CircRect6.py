@@ -4,6 +4,7 @@ import gmsh
 
 def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
 
+    
     vec_z = vec_z / np.linalg.norm(vec_z)
     vec_x = vec_x / np.linalg.norm(vec_x)
 
@@ -23,6 +24,11 @@ def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
     p2y1 = np.array([Lx/2 + x_eps, +Ly, 0])
     p2y2 = np.array([Lx/2 + x_eps, -Ly, 0])
 
+    y1_mid = 0.5*(p1y1 + p2y1)
+    y2_mid = 0.5*(p1y2 + p2y2)
+    # ==========================
+
+
     rot = np.column_stack((vec_x, vec_y, vec_z))
 
     p1 = np.dot(rot, p1)
@@ -34,6 +40,9 @@ def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
     p2y1 = np.dot(rot, p2y1)
     p2y2 = np.dot(rot, p2y2)
 
+    y1_mid = np.dot(rot, y1_mid)
+    y2_mid = np.dot(rot, y2_mid)
+
     # translate to the origin   
     p1 = p1 + np.array([x0, y0, z0])
     p2 = p2 + np.array([x0, y0, z0])
@@ -44,25 +53,35 @@ def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
     p2y1 = p2y1 + np.array([x0, y0, z0])
     p2y2 = p2y2 + np.array([x0, y0, z0])
 
+    y1_mid = y1_mid + np.array([x0, y0, z0])
+    y2_mid = y2_mid + np.array([x0, y0, z0])
+
     p1 = gmsh.model.occ.addPoint(*p1)
     p1y1 = gmsh.model.occ.addPoint(*p1y1)
     p1y2 = gmsh.model.occ.addPoint(*p1y2)
+    y1_mid = gmsh.model.occ.addPoint(*y1_mid)
     gmsh.model.occ.synchronize()
 
 
     p2 = gmsh.model.occ.addPoint(*p2)
     p2y1 = gmsh.model.occ.addPoint(*p2y1)
     p2y2 = gmsh.model.occ.addPoint(*p2y2)
+    y2_mid = gmsh.model.occ.addPoint(*y2_mid)
     gmsh.model.occ.synchronize()
 
     arc1 = gmsh.model.occ.addCircleArc(p1y1, p1, p1y2)
-    ly2  = gmsh.model.occ.addLine(p1y2,p2y2)
+    # ly2  = gmsh.model.occ.addLine(p1y2,p2y2)
+    ly2_1 = gmsh.model.occ.addLine(p1y2,y2_mid)
+    ly2_2 = gmsh.model.occ.addLine(y2_mid,p2y2)
 
     arc2 = gmsh.model.occ.addCircleArc(p2y2, p2,p2y1)
-    ly1  = gmsh.model.occ.addLine(p2y1,p1y1)
+    # ly1_mid  = gmsh.model.occ.addLine(p2y1,p1y1)
+    ly1_1 = gmsh.model.occ.addLine(p2y1,y1_mid)
+    ly1_2 = gmsh.model.occ.addLine(y1_mid,p1y1)
+
 
     # create the surface
-    curve_loop = gmsh.model.occ.addCurveLoop([arc1, ly2, arc2, ly1])
+    curve_loop = gmsh.model.occ.addCurveLoop([arc1, ly2_1,ly2_2, arc2, ly1_1, ly1_2])
 
     # cerrar curve 
 
@@ -71,5 +90,4 @@ def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
     ss = gmsh.model.occ.addPlaneSurface([curve_loop])
 
     gmsh.model.occ.synchronize()
-
     return curve_loop
