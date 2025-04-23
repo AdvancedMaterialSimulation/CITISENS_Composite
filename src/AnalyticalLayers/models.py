@@ -21,7 +21,7 @@ El_dict = { "X" :None,
             "Y" :None, 
             "SY":None}
     
-def E_flexion(En,El,tn,tl,layers):
+def E_flexion(En,El,tn,tl,layers,gamma=1.0):
 
     El_dict["X"]  = El[0]
     El_dict["SX"] = El[1]
@@ -41,7 +41,7 @@ def E_flexion(En,El,tn,tl,layers):
     In = (1/12)*tn**3
     It = (1/12)*tt**3
     
-    return (En*In + 2*np.dot(El_s,Il))/It
+    return gamma*(En*In + 2*np.dot(El_s,Il))/It
 
 # =============================================================================
 

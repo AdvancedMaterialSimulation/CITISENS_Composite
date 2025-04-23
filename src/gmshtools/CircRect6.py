@@ -2,8 +2,10 @@
 import numpy as np
 import gmsh
 
-def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
+def CircRect(x0, y0, z0, r,distance,vec_z, vec_x, x_eps=1e-6):
 
+    Lx = distance
+    Ly = r
     
     vec_z = vec_z / np.linalg.norm(vec_z)
     vec_x = vec_x / np.linalg.norm(vec_x)
@@ -24,8 +26,10 @@ def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
     p2y1 = np.array([Lx/2 + x_eps, +Ly, 0])
     p2y2 = np.array([Lx/2 + x_eps, -Ly, 0])
 
-    y1_mid = 0.5*(p1y1 + p2y1) 
-    y2_mid = 0.5*(p1y2 + p2y2) 
+    # ==========================
+    ee = 0.0
+    y1_mid = 0.5*(p1y1 + p2y1)  + ee*np.array([0, 1, 0])
+    y2_mid = 0.5*(p1y2 + p2y2)  - ee*np.array([0, 1, 0])
     # ==========================
 
 
@@ -53,8 +57,9 @@ def CircRect(x0, y0, z0, Lx, Ly,vec_z, vec_x, x_eps=1e-6):
     p2y1 = p2y1 + np.array([x0, y0, z0])
     p2y2 = p2y2 + np.array([x0, y0, z0])
 
-    y1_mid = y1_mid + np.array([x0, y0, z0])
-    y2_mid = y2_mid + np.array([x0, y0, z0])
+    eps = 1e-8
+    y1_mid = y1_mid + np.array([x0, y0, z0]) + eps*np.array([0, 1, 0])
+    y2_mid = y2_mid + np.array([x0, y0, z0]) - eps*np.array([0, 1, 0])
 
     p1 = gmsh.model.occ.addPoint(*p1)
     p1y1 = gmsh.model.occ.addPoint(*p1y1)

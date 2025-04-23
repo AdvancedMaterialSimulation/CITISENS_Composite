@@ -1,6 +1,5 @@
 import gmsh
 import numpy as np
-from gmshtools.CircRect import CircRect
 def nearest_multiple_of_six(n):
     # Encuentra el múltiplo de 6 más cercano hacia abajo
     lower = n - (n % 6)
@@ -79,7 +78,6 @@ def CreateYarnElipse(params):
 
     plausible_final =np.array([[1,0,0], [0,1,0], [-1,0,0], [0,-1,0] ] )
 
-    printw = lambda *args: print("[CreateYarn]", *args)
 
     trajs  = params["trajs"]
     file   = params["file"]
@@ -88,7 +86,6 @@ def CreateYarnElipse(params):
 
     rx = radius * factor
     ry = radius * (1/factor)
-    ry_rect = ry + 2*rx
 
     density = params["density"] 
     trajs,trajs_vec = reduce_points(trajs, radius,density=density)

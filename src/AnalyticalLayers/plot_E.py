@@ -2,15 +2,15 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
-    fig = plt.figure(figsize=(9, 4))
+    fig = plt.figure(figsize=(8, 5))
     ax = fig.add_subplot(211)
     offset = 0.15
     # bar plot tau_exp and tau_pred in the same plot separated by a gap
     xspan = range(len(df_stats.index))
     # ax.bar([x-offset for x in xspan], tau_exp, width=offset, label='Experimental')
-    error = df_stats['Modulo (GPa)']['std'].values
+    error = df_stats['Et [GPa]']['std'].values
     ax.bar([x-offset for x in xspan], E_eff_exp, yerr=error, width=offset, label='Experimental', capsize=5)
-    ax.bar([x+offset for x in xspan], E_eff_pred, width=offset, label='Predicted')
+    ax.bar([x+offset for x in xspan], E_eff_pred, width=offset, label='Predicción')
     ax.set_xticks(xspan);
     ax.set_xticklabels(df_stats.index);
     ax.legend()
@@ -25,9 +25,9 @@ def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
     Evec_opt_str = "  ,  ".join([f"{E:.2f}" for E in Evec_opt])
     # E_vec[0],E_vec[1],E_vec[2],E_vec[3] = E_l_X,E_l_Y,E_l_SX,E_l_SY
 
-    names = ["X","Y","SX","SY"]
-    title_str = "  ,  ".join([f"E_{names[i]} = {Evec_opt[i]:.2f}" for i in range(4)])
-    plt.title(f' $E_n = {En_opt:.2f} \\ [GPa]$ |  {title_str}', fontsize=fz)
+    names = [r"{X}",r"{SX}",r"{Y}",r"{SY}"]
+    title_str = "  ,  ".join([f"$E_{names[i]}$ = {Evec_opt[i]:.2f}" for i in range(4)])
+    plt.title(f' $E_n = {En_opt:.2f} \\ $ |  {title_str}', fontsize=fz)
 
     ax = fig.add_subplot(212)
     # relative error

@@ -1,6 +1,7 @@
 import gmsh
 import numpy as np
 from gmshtools.CircRect6 import CircRect
+from gmshtools.ElipseRect6 import ElipseRect
 from gmshtools.reduce_points import reduce_points
 
 
@@ -57,8 +58,10 @@ def CreateYarnRect(params):
 
     xAxis = np.cross(trajs_vec[0], [0,0,1])
 
+    ff = 1.2
+
     disk = CircRect(x, y, z,
-                    factor_init*rx, ry,
+                    ff*factor_init*rx, ry,
                     trajs_vec[0], xAxis)
     
     disks.append(disk)
@@ -83,7 +86,7 @@ def CreateYarnRect(params):
 
     xAxis = np.cross(trajs_vec[-1], [0,0,1])
     disk = CircRect(x, y, z,
-                    factor_end*rx, ry,
+                    ff*factor_end*rx, ry,
                     trajs_vec[-1], xAxis)
     
     
@@ -128,12 +131,16 @@ def CreateYarnRect(params):
     points = [ p for p in points if p[1] not in points_old]
 
     # remove surfaces
-    gmsh.model.occ.remove(surfaces,recursive=True)
-    gmsh.model.occ.synchronize()
-    gmsh.model.occ.remove(lines,recursive=True)
-    gmsh.model.occ.synchronize()
-    gmsh.model.occ.remove(points,recursive=True)
-    gmsh.model.occ.synchronize()
+
+    remove_elements = False
+
+    if remove_elements:
+        gmsh.model.occ.remove(surfaces,recursive=True)
+        gmsh.model.occ.synchronize()
+        gmsh.model.occ.remove(lines,recursive=True)
+        gmsh.model.occ.synchronize()
+        gmsh.model.occ.remove(points,recursive=True)
+        gmsh.model.occ.synchronize()
 
     return {"volumes":volumes}
 

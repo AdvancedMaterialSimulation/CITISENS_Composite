@@ -41,7 +41,7 @@ def TensilePlotData(df_stats):
     # plot bars with error bars Espesor (mm)
     fig = plt.figure(figsize=(9, 4))
     ax = fig.add_subplot(121)
-    df_stats['Espesor (mm)'].plot(kind='bar', y='mean', 
+    df_stats['t [mm]'].plot(kind='bar', y='mean', 
                             yerr='std', 
                             legend=False, 
                             title='Espesor (mm)', 
@@ -53,7 +53,7 @@ def TensilePlotData(df_stats):
     # plot bars with error bars Modulo Tracción [MPa]
     plt.grid()
     ax = fig.add_subplot(122)
-    df_stats['Modulo (GPa)'].plot(kind='bar', y='mean', yerr='std', legend=False, title='Modulo Tracción [GPa]', ax=ax)
+    df_stats['Et [GPa]'].plot(kind='bar', y='mean', yerr='std', legend=False, title='Modulo Tracción [GPa]', ax=ax)
     plt.grid()
     # off xlabel
     plt.xlabel('') 

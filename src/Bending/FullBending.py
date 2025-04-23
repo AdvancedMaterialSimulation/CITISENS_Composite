@@ -88,8 +88,8 @@ def FullBending(params):
     tn = params["geo"]["t_n"]
     tl = params["geo"]["t_l"]
     En = params["sim"]["E_n"]
-
-    params["Eflexion_analytical"] = E_flexion(1e-3*En,params["El"],tn,tl,layers)
+    # factor de correccion de 0.8 para el Eflexion
+    params["Eflexion_analytical"] = 0.8*E_flexion(1e-3*En,params["El"],tn,tl,layers)
     nu = 0.3
     # params["Eflexion_analytical"] = params["Eflexion_analytical"] * (1 - nu**2)
 
