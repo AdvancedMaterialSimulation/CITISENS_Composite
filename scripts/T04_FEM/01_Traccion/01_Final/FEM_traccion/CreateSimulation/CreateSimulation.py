@@ -80,11 +80,11 @@ def CreateSimulation(design_folder,
     poisson_carbon = carbon_data["poisson ratio"]
 
     materials = {
-        "matrix": { "E" : resina_data["young modulus [MPa]"], 
+        "matrix": { "E" : params["E_resina"], 
                     "nu": resina_data["poisson ratio"] },
-        "carbon": { "E" : Ecarbon_MPa, 
+        "carbon": { "E" : params["E_fibra"], 
                     "nu": poisson_carbon },
-        "nucleo": { "E" : nucleo_data["young modulus [MPa]"],
+        "nucleo": { "E" : params["E_nucleo"],
                     "nu": nucleo_data["poisson ratio"] }
     }
 

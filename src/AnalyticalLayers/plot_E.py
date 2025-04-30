@@ -8,7 +8,11 @@ def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
     # bar plot tau_exp and tau_pred in the same plot separated by a gap
     xspan = range(len(df_stats.index))
     # ax.bar([x-offset for x in xspan], tau_exp, width=offset, label='Experimental')
-    error = df_stats['Et [GPa]']['std'].values
+    try:
+        error = df_stats['Et [GPa]']['std'].values
+    except:
+        error = df_stats['Eb [GPa]']['std'].values
+    
     ax.bar([x-offset for x in xspan], E_eff_exp, yerr=error, width=offset, label='Experimental', capsize=5)
     ax.bar([x+offset for x in xspan], E_eff_pred, width=offset, label='Predicción')
     ax.set_xticks(xspan);
