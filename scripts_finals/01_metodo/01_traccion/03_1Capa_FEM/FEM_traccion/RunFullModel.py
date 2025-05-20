@@ -44,7 +44,7 @@ def RunFullModel(design,root,params):
                     design,
                     ouput_folder_designs,
                     params["mesh"])
-
+    
     # ==========================================================
     # 3. Create the simulation (inp file) and run it
     # ==========================================================

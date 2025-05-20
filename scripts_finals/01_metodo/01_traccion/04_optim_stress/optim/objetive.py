@@ -20,15 +20,15 @@ def objetive(tn,tl,En,El,Sl,df,ni,give_pred=False,factor={"t":1,
     t_p = Tau_model(tn, tl, ni)
 
 
-    Et_p =  [E_Tensile(En, El, tn, tl, ilayer ) 
+    Et_p =  [E_Tensile(En, El, tn, tl, ilayer,omega=1.0)  
              for ilayer in df["layers"]]
     Et_p = np.array(Et_p)
 
-    Eb_p =  [E_flexion(En, El, tn, tl, ilayer,gamma=0.8 ) 
+    Eb_p =  [E_flexion(En, El, tn, tl, ilayer,gamma=1.0 ) 
              for ilayer in df["layers"]]
 
 
-    St = [ Rotura(c,Et_p[i],El,Sl) 
+    St = [ Rotura(c,Et_p[i],El,Sl,gamma=1.0) 
             for i,c in enumerate(df["layers"])]
     # 
     # En este caso cambiamos Et_p -> Eb_p

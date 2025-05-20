@@ -31,6 +31,16 @@ def CreateLines(params):
                 "Adouble" : [trajs_Y,trajs_Y],
                 }
     
+    desings_str = {
+        "A": ["Y"],
+        "B": ["Y","X"],
+        "C": ["Y","SX"],
+        "D": ["Y","SY"],
+        "E": ["Y","SY","SX"],
+        "F": ["Y","X","SY"],
+        "Adouble": ["Y","Y"],
+    }
+
     # list to dict
     
     for key in designs.keys():
@@ -41,5 +51,6 @@ def CreateLines(params):
     params["Lx"] = Lx
     params["Ly"] = Ly
     params["longs"] = trajs_basic["longs"]
+    params["designs_str"] = desings_str
     
     return params

@@ -119,8 +119,8 @@ def SimulationTensile(params):
         istep.CreateBoundary(Y0_nset,2,0.0)
         istep.CreateBoundary(YL_nset,2,disp)
 
-        # istep.CreateBoundary(X0_nset,1,0.0)
-        # istep.CreateBoundary(XL_nset,1,0.0)
+        istep.CreateBoundary(X0_nset,1,0.0)
+        istep.CreateBoundary(XL_nset,1,0.0)
 
     # create output if not exist
     if os.path.exists(output) == False:

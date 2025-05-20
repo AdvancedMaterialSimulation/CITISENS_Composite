@@ -110,9 +110,7 @@ def CreateSimulation(design_folder,
         inp_f.CreateSolidSection(interface_elset,matrix_material)
         #inp_f.CreateShellSection(interface_elset,matrix_material)
 
-    istep = inp_f.CreateStaticStep(nlgeom=False)
     inp_f.CreateElsetAll()
-    istep.elsets_print = ["YARNS","ALL","ALMA"]
 
     ip_Y0 = Y0_PLANE_NSET.id_nodes[0]
     ip_YL = YL_PLANE_NSET.id_nodes[0]
@@ -121,15 +119,20 @@ def CreateSimulation(design_folder,
     y0_pos = inp_f.nodes.df["y"][ip_Y0]
     displ_y = params["epsilon"]*(yL_pos - y0_pos)
 
-    istep.CreateBoundary(Y0_PLANE_NSET,dim=2,displ=0)
-    istep.CreateBoundary(YL_PLANE_NSET,dim=2,displ=displ_y)
-   
-    if "ALMA_Z0_PLANE_NSET" in locals():
-        istep.CreateBoundary(ALMA_Z0_PLANE_NSET,dim=3,displ=0.0)
+    for idispl in [displ_y]:
 
-    if params["x_fixed"]:
-        istep.CreateBoundary(X0_PLANE_NSET,dim=1,displ=0.0)
-        istep.CreateBoundary(XL_PLANE_NSET,dim=1,displ=0.0)
+        istep = inp_f.CreateStaticStep(nlgeom=False)
+        istep.elsets_print = ["YARNS","ALL","ALMA"]
+
+        istep.CreateBoundary(Y0_PLANE_NSET,dim=2,displ=0)
+        istep.CreateBoundary(YL_PLANE_NSET,dim=2,displ=idispl)
+    
+        if "ALMA_Z0_PLANE_NSET" in locals():
+            istep.CreateBoundary(ALMA_Z0_PLANE_NSET,dim=3,displ=0.0)
+
+        if params["x_fixed"]:
+            istep.CreateBoundary(X0_PLANE_NSET,dim=1,displ=0.0)
+            istep.CreateBoundary(XL_PLANE_NSET,dim=1,displ=0.0)
 
 
 

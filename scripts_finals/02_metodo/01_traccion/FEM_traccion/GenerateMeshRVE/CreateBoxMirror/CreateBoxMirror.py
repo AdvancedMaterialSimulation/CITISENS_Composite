@@ -4,8 +4,12 @@ import os
 from CompositeSandwich.box_labeling import box_labeling
 from .SetNames import SetNames
 from .are_coplanar import are_coplanar
-
-
+from .gmsh.A import Agmsh
+from .gmsh.B import Bgmsh
+from .gmsh.C import Cgmsh
+from .gmsh.D import Dgmsh
+from .gmsh.E import Egmsh
+from .gmsh.F import Fgmsh
 
 def CreateBoxMirror(params_yarns,output_folder):
 
@@ -173,48 +177,19 @@ def CreateBoxMirror(params_yarns,output_folder):
     gmsh.write(os.path.join(*output_folder,"composite.brep"))
     print("Meshing ... ")
 
+    # switch 
+    design = params_yarns["select_design"]
+    
+    gmsh_opt = {
+        "Adouble": Agmsh,
+        "B"      : Bgmsh,
+        "C"      : Cgmsh,
+        "D"      : Dgmsh,
+        "E"      : Egmsh,
+        "F"      : Fgmsh,
+    }
 
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature",10) # 20
-    gmsh.option.setNumber("Mesh.Algorithm", 6)
-
-    def BoxRefine(x1,x2,y1,y2,z1,z2,vin,vout,Thickness=0.25):
-        
-
-        field_tag = gmsh.model.mesh.field.add("Box")
-
-        gmsh.model.mesh.field.setNumber(field_tag, "VIn", vin)
-        gmsh.model.mesh.field.setNumber(field_tag, "VOut", vout)
-
-        gmsh.model.mesh.field.setNumber(field_tag, "XMin", x1)
-        gmsh.model.mesh.field.setNumber(field_tag, "XMax", x2)
-
-        gmsh.model.mesh.field.setNumber(field_tag, "YMin", y1)
-        gmsh.model.mesh.field.setNumber(field_tag, "YMax", y2)
-
-        gmsh.model.mesh.field.setNumber(field_tag, "ZMin", z1)
-        gmsh.model.mesh.field.setNumber(field_tag, "ZMax", z2)
-
-        # Thickness
-        gmsh.model.mesh.field.setNumber(field_tag, "Thickness", Thickness)
-
-        return field_tag
-
-    # create the box field
-    field_box_fulllength = BoxRefine(0, Lx, 
-                                     0, Ly, 
-                                     0, zT/2, 
-                                     fc_mesh_max, fc_mesh_max)
-
-    field_box = BoxRefine(0, Lx, 
-                          0, Ly, 
-                          z0/2, zT/2, fc_mesh_min, fc_mesh_max)
-
-    # min field
-    field_min = gmsh.model.mesh.field.add("Min")
-    gmsh.model.mesh.field.setNumbers(field_min, "FieldsList", [field_box_fulllength, field_box])
-
-    # set the field to the box
-    gmsh.model.mesh.field.setAsBackgroundMesh(field_min)
+    gmsh_opt[design](Lx, Ly, z0, zT)
 
     # generate the mesh
     gmsh.model.mesh.generate(3)

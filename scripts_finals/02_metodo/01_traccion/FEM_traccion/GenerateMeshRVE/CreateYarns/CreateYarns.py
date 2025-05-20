@@ -20,11 +20,14 @@ def CreateYarns(params,output_folder):
     Ly      = params["Ly"]
     density = params["density"]
 
-    d = params["d"]
+    layers = params["designs_str"][params["select_design"]]
+
+    d_all = params["d"]
 
     
     for j,trajs in enumerate(trajs_layers):
         
+        d = d_all[layers[j]]
         for i,itraj in enumerate(trajs):
 
             itraj = deepcopy(itraj)

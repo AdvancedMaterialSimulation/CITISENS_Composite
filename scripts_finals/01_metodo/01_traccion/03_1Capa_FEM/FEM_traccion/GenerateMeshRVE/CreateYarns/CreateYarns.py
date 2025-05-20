@@ -20,9 +20,9 @@ def CreateYarns(params,output_folder):
     Ly      = params["Ly"]
     density = params["density"]
 
-    d = params["d"]
+    d_all = params["d"]
 
-    
+    d = d_all[params["select_design"]]
     for j,trajs in enumerate(trajs_layers):
         
         for i,itraj in enumerate(trajs):

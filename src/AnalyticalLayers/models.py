@@ -6,12 +6,12 @@ def Tau_model(tn, tl, ni):
     return tn + 2*tl*ni
 
 # =============================================================================
-def E_Tensile(En,El,tn,tl,layers):
+def E_Tensile(En,El,tn,tl,layers,omega=1):
 
     delta = get_vector(layers)
     ni  = len(layers)
     tt = Tau_model(tn, tl, ni)
-    E_eff = (En*tn + 2*tl*np.dot(delta,El))/tt
+    E_eff = omega*(En*tn + 2*tl*np.dot(delta,El))/tt
     return E_eff
 
 # =============================================================================
@@ -45,10 +45,10 @@ def E_flexion(En,El,tn,tl,layers,gamma=1.0):
 
 # =============================================================================
 
-longs = { "X": 70.0,
-          "Y": 70.0,
-          "SX": 40.0,
-          "SY": 40.0 }
+longs = { "X": 60.0,
+          "Y": 60.0,
+          "SX": 31.830988618379067,
+          "SY": 31.830988618379067 }
 
 def Fraction_Carbon(radius,tn,tl,layers):
 
@@ -65,6 +65,34 @@ def Fraction_Carbon(radius,tn,tl,layers):
 
 # =============================================================================
 
+longs = { "X": 60.0,
+          "Y": 60.0,
+          "SX": 31.830988618379067,
+          "SY": 31.830988618379067 }
+
+radius = { "X": 0.5,
+            "Y": 0.5,
+            "SX": 0.5,
+            "SY": 0.5 }
+
+def Fraction_Carbon_2(rr,tn,tl,layers):
+
+    radius["X"] = rr[0]
+    radius["SX"] = rr[1]
+    radius["Y"] = rr[2]
+    radius["SY"] = rr[3]
+
+    A_RVE = 10*10 # mm^2
+
+    ni = len(layers)
+    tt = Tau_model(tn,tl,ni)
+    v_tol = tt*A_RVE
+
+    v_car = 2*np.sum([ np.pi * radius[ily]**2*longs[ily] for ily in layers ])
+
+    return v_car/v_tol
+# =============================================================================
+
 El_dict = { "X" :None, 
             "SX":None, 
             "Y" :None, 
@@ -75,7 +103,7 @@ Sl_dict = { "X" :None,
             "Y" :None,
             "SY":None}
 
-def Rotura(layers,E_eff,El,sigmal):
+def Rotura(layers,E_eff,El,sigmal,gamma=1.0):
 
     El_dict["X"]  = El[0]
     El_dict["SX"] = El[1]

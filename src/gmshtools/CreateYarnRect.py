@@ -1,7 +1,6 @@
 import gmsh
 import numpy as np
 from gmshtools.CircRect6 import CircRect
-from gmshtools.ElipseRect6 import ElipseRect
 from gmshtools.reduce_points import reduce_points
 
 
@@ -21,16 +20,15 @@ def CreateYarnRect(params):
 
 
     trajs  = params["trajs"]
-    radius = params["radius"]
+    r = params["r"]
+    d = params["d"]
     vec_init = params["vec_init"]
     vec_end  = params["vec_end"]
     skip_left = params["skip_left"]
     skip_right = params["skip_right"]
 
 
-    factor = 2.2
-    rx = factor*radius
-    ry = (1/factor)*radius
+
 
     density = params["density"] 
     trajs,trajs_vec = reduce_points(trajs,
@@ -61,7 +59,7 @@ def CreateYarnRect(params):
     ff = 1.2
 
     disk = CircRect(x, y, z,
-                    ff*factor_init*rx, ry,
+                    r, ff*factor_init*d,
                     trajs_vec[0], xAxis)
     
     disks.append(disk)
@@ -74,7 +72,7 @@ def CreateYarnRect(params):
         xAxis = np.cross(trajs_vec[i], [0,0,1])
         
         disk = CircRect(x, y, z, 
-                        rx, ry, 
+                        r, d, 
                         trajs_vec[i], xAxis)
         # crear loop from disk
         
@@ -86,7 +84,7 @@ def CreateYarnRect(params):
 
     xAxis = np.cross(trajs_vec[-1], [0,0,1])
     disk = CircRect(x, y, z,
-                    ff*factor_end*rx, ry,
+                    r, ff*factor_end*d,
                     trajs_vec[-1], xAxis)
     
     

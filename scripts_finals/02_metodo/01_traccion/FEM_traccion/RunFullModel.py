@@ -22,7 +22,7 @@ def RunFullModel(design,root,params):
     lines = CreateLines(lines)
 
     params["longs"] = lines["longs"]
-
+    params["mesh"]["designs_str"] = lines["designs_str"]
     if not os.path.exists(root):
         os.makedirs(root)
         

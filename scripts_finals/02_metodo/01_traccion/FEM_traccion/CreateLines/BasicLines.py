@@ -45,6 +45,20 @@ def BasicLines(params):
              for c in r[itrajs_keys] ] ) 
              for itrajs_keys in trajs_keys]
 
+    # longs = [ np.sum([  np.sqrt(np.sum( (c[1:]-c[:-1])**2 )) 
+    #          for c in r[itrajs_keys] ] ) 
+    #          for itrajs_keys in trajs_keys]
+
+    def longitud(trajs):
+
+        diffs = np.diff(trajs, axis=0)
+        diffs = np.sqrt(np.sum(diffs**2, axis=1))
+
+        return np.sum(diffs)
+    
+    longs = [np.sum([longitud(itraj) for itraj in r[itrajs_keys]] )
+             for itrajs_keys in trajs_keys]
+
     r["longs"] = {itrajs_keys:longs[i] for i,itrajs_keys in enumerate(trajs_keys)}
 
     return r

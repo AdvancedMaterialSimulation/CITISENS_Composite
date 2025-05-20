@@ -3,13 +3,13 @@ from matplotlib import pyplot as plt
 def plt_thin(df_stats, tau_exp, tau_pred, tn_opt, tl_opt):
     fig = plt.figure(figsize=(9, 4))
     ax = fig.add_subplot(211)
-    offset = 0.15
+    offset = 0.2
     # bar plot tau_exp and tau_pred in the same plot separated by a gap
     xspan = range(len(df_stats.index))
     # ax.bar([x-offset for x in xspan], tau_exp, width=offset, label='Experimental')
     error = df_stats['t [mm]']['std'].values
-    ax.bar([x-offset for x in xspan], tau_exp, yerr=error, width=offset, label='Experimental', capsize=5)
-    ax.bar([x+offset for x in xspan], tau_pred, width=offset, label='Predicted')
+    ax.bar([x-offset/2 for x in xspan], tau_exp, yerr=error, width=offset, label='Experimental', capsize=5)
+    ax.bar([x+offset/2 for x in xspan], tau_pred, width=offset, label='Predicted')
     ax.set_xticks(xspan);
     ax.set_xticklabels(df_stats.index);
     ax.legend()

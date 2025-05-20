@@ -50,7 +50,7 @@ def FullBending(params):
     t = params["geo"]["t_t"]
 
     params["Eflex"] = (P*L**3)/(4*U*B*t**3) * 1e-3
-
+    params["Force"] = P
     # 
 
 
