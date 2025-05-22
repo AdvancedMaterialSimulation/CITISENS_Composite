@@ -2,9 +2,9 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
-    fig = plt.figure(figsize=(8, 5))
-    ax = fig.add_subplot(211)
-    offset = 0.2
+    fig = plt.figure(figsize=(5, 5))
+    ax = fig.add_subplot(111)
+    offset = 0.4
     # bar plot tau_exp and tau_pred in the same plot separated by a gap
     xspan = range(len(df_stats.index))
     # ax.bar([x-offset for x in xspan], tau_exp, width=offset, label='Experimental')
@@ -31,9 +31,10 @@ def plot_E(df_stats, E_eff_exp, E_eff_pred, Evec_opt, En_opt):
 
     names = [r"{X}",r"{SX}",r"{Y}",r"{SY}"]
     title_str = "  ,  ".join([f"$E_{names[i]}$ = {Evec_opt[i]:.2f}" for i in range(4)])
-    plt.title(f' $E_n = {En_opt:.2f} \\ $ |  {title_str}', fontsize=fz)
+    # plt.title(f' $E_n = {En_opt:.2f} \\ $ |  {title_str}', fontsize=fz)
+    fig = plt.figure(figsize=(5, 5))
 
-    ax = fig.add_subplot(212)
+    ax = fig.add_subplot(111)
     # relative error
     error = 100*abs(E_eff_exp - E_eff_pred)/E_eff_exp
     ax.bar(xspan, error, width=0.4)
