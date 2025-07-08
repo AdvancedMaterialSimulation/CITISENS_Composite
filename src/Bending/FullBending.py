@@ -19,6 +19,9 @@ def FullBending(params):
     geo_folder = join(output_folder,"geo")
     sim_folder = join(output_folder,"sim")
     tensile_folder = join(output_folder,"tensile")
+    # mkdir if not exist
+    if os.path.exists(tensile_folder) == False:
+        os.mkdir(tensile_folder)
 
 
     params["geo"]["n_l"] = len(params["sim"]["E_l"])

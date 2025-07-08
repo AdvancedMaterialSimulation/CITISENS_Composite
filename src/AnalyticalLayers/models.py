@@ -32,7 +32,7 @@ def E_flexion(En,El,tn,tl,layers,gamma=1.0):
     
     ni = len(El_s)
     tt = Tau_model(tn, tl, ni)
-
+ 
     rng = np.arange(1,ni+1)    # [1,2,3,...,ni]
     rng = rng - 0.5            # [0.5, 1.5 , 2.5,...,ni-0.5]
     Yg = tn/2 +  tl*rng        # [Yg1, Yg2, Yg3,...,Ygni]
@@ -40,7 +40,7 @@ def E_flexion(En,El,tn,tl,layers,gamma=1.0):
     Il = (1/12)*tl**3 + tl*Yg**2
     In = (1/12)*tn**3
     It = (1/12)*tt**3
-    
+     
     return gamma*(En*In + 2*np.dot(El_s,Il))/It
 
 # =============================================================================

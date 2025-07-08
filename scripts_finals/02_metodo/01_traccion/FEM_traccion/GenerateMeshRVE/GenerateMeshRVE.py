@@ -5,7 +5,7 @@ from .CreateBoxMirror.CreateBoxMirror import CreateBoxMirror
 fc_mesh_max_d = {
     "Adouble": 1.0,
     "B"      : 1.0,
-    "C"      : 1.0,
+    "C"      : 0.8,
     "D"      : 1.0,
     "E"      : 1.25,
     "F"      : 1.25,
@@ -14,7 +14,7 @@ fc_mesh_max_d = {
 fc_mesh_min_d = {
     "Adouble": 0.35,
     "B"      : 0.35,
-    "C"      : 0.30,
+    "C"      : 0.20,
     "D"      : 0.30,
     "E"      : 0.6,
     "F"      : 0.55,
