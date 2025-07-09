@@ -2,7 +2,7 @@ import gmsh
 from .BoxRefine import BoxRefine
 def Cgmsh(Lx, Ly, z0, zT):    
 
-    fc_mesh_min = 0.6
+    fc_mesh_min = 0.5
     fc_mesh_max = 0.9
 
     # curvature 

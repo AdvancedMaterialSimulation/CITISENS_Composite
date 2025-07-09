@@ -21,6 +21,25 @@ fc_mesh_min_d = {
 }
 
 
+
+fc_mesh_max_d = {
+    "Adouble": 1.0,
+    "B"      : 1.0,
+    "C"      : 0.7,
+    "D"      : 1.0,
+    "E"      : 1.25,
+    "F"      : 1.25,
+
+}
+fc_mesh_min_d = {
+    "Adouble": 0.35,
+    "B"      : 0.35,
+    "C"      : 0.20,
+    "D"      : 0.30,
+    "E"      : 0.6,
+    "F"      : 0.55,
+}
+
 def GenerateMeshRVE(lines,select_design,output_folder,params_composite):
 
     output_folder = os.path.join(output_folder,select_design)

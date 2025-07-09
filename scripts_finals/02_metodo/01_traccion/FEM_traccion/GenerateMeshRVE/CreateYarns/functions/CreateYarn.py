@@ -52,6 +52,8 @@ def CreateYarn(params):
     # 
     # Iniciar GMSH
     gmsh.initialize()
+    # verbose 0 
+    gmsh.option.setNumber("General.Terminal", 0)
     gmsh.clear()
 
     gmsh.option.setNumber("Geometry.Tolerance", 1e-5)  # Ajusta la tolerancia

@@ -36,6 +36,8 @@ def semiellipse_mesh(itraj,radius,file,d):
         xAxis = [1,0,0]
 
     gmsh.initialize()
+    gmsh.option.setNumber("General.Terminal", 0)
+
     gmsh.clear()
     gmsh.model.add("half_ellipse")
 

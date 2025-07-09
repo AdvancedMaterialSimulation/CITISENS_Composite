@@ -34,6 +34,7 @@ def CreateBoxMirror(params_yarns,output_folder):
 
     gmsh.initialize()
     gmsh.clear()
+    gmsh.option.setNumber("General.Terminal", 0)
 
     fc_mesh_min = params_yarns["fc_mesh_min"]
     fc_mesh_max = params_yarns["fc_mesh_max"]
